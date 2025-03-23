@@ -1,0 +1,111 @@
+<div class="container mt-4">
+    <div class="card shadow p-4">
+      <h2 class="text-center mb-3">Doctor Profile Registration</h2>
+      <form #doctorForm="ngForm" (ngSubmit)="submitDoctorForm()">
+        
+        <!-- Personal Information -->
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" name="fullName" [(ngModel)]="doctor.fullName" required>
+        </div>
+  
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" name="dob" [(ngModel)]="doctor.dob" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Gender</label>
+            <select class="form-select" name="gender" [(ngModel)]="doctor.gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Contact Number</label>
+          <input type="tel" class="form-control" name="contact" [(ngModel)]="doctor.contact" required>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" [(ngModel)]="doctor.email" required>
+        </div>
+  
+        <!-- Professional Details -->
+        <div class="mb-3">
+          <label class="form-label">Specialization</label>
+          <select class="form-select" name="specialization" [(ngModel)]="doctor.specialization" required>
+            <option value="">Select Specialization</option>
+            <option *ngFor="let spec of specializations" [value]="spec">{{ spec }}</option>
+          </select>
+        </div>
+  
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Experience (Years)</label>
+            <input type="number" class="form-control" name="experience" [(ngModel)]="doctor.experience" required min="0">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Medical Registration Number</label>
+            <input type="text" class="form-control" name="registrationNumber" [(ngModel)]="doctor.registrationNumber" required>
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Qualification</label>
+          <input type="text" class="form-control" name="qualification" [(ngModel)]="doctor.qualification" required>
+        </div>
+  
+        <!-- Consultation Details -->
+        <div class="mb-3">
+          <label class="form-label">Hospital/Clinic Name</label>
+          <input type="text" class="form-control" name="hospital" [(ngModel)]="doctor.hospital" required>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Consultation Type</label>
+          <select class="form-select" name="consultationType" [(ngModel)]="doctor.consultationType" required>
+            <option value="">Select Consultation Type</option>
+            <option value="In-Person">In-Person</option>
+            <option value="Online">Online</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Consultation Fee (₹)</label>
+          <input type="number" class="form-control" name="fee" [(ngModel)]="doctor.fee" required>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Available Days & Timings</label>
+          <input type="text" class="form-control" name="availability" [(ngModel)]="doctor.availability" placeholder="e.g., Mon-Fri, 10AM-5PM" required>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Languages Spoken</label>
+          <input type="text" class="form-control" name="languages" [(ngModel)]="doctor.languages" placeholder="e.g., English, Hindi, Tamil">
+        </div>
+  
+        <!-- File Uploads -->
+        <div class="mb-3">
+          <label class="form-label">Medical License Certificate</label>
+          <input type="file" class="form-control" name="license" (change)="onFileSelected($event)">
+        </div>
+  
+        <!-- Bio -->
+        <div class="mb-3">
+          <label class="form-label">Doctor's Bio</label>
+          <textarea class="form-control" name="bio" [(ngModel)]="doctor.bio" rows="3"></textarea>
+        </div>
+  
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary w-100" [disabled]="!doctorForm.form.valid">Register Profile</button>
+      </form>
+    </div>
+  </div>
+  

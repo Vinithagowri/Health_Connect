@@ -1,0 +1,71 @@
+<div class="container mt-4">
+    <div class="card shadow p-4">
+      <h2 class="text-center mb-3">Book an Appointment</h2>
+      <form #appointmentForm="ngForm" (ngSubmit)="submitForm()">
+        
+        <!-- Patient Name -->
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" name="fullName" [(ngModel)]="appointment.fullName" required>
+        </div>
+  
+        <!-- Age & Gender -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Age</label>
+            <input type="number" class="form-control" name="age" [(ngModel)]="appointment.age" required min="0">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Gender</label>
+            <select class="form-select" name="gender" [(ngModel)]="appointment.gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+  
+        <!-- Contact Information -->
+        <div class="mb-3">
+          <label class="form-label">Contact Number</label>
+          <input type="tel" class="form-control" name="contact" [(ngModel)]="appointment.contact" required>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Email (Optional)</label>
+          <input type="email" class="form-control" name="email" [(ngModel)]="appointment.email">
+        </div>
+  
+        <!-- Doctor Selection -->
+        <div class="mb-3">
+          <label class="form-label">Select Doctor</label>
+          <select class="form-select" name="doctor" [(ngModel)]="appointment.doctor" required>
+            <option value="">Choose a Doctor</option>
+            <option *ngFor="let doctor of doctors" [value]="doctor">{{ doctor }}</option>
+          </select>
+        </div>
+  
+        <!-- Date & Time -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Preferred Date</label>
+            <input type="date" class="form-control" name="date" [(ngModel)]="appointment.date" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Preferred Time</label>
+            <input type="time" class="form-control" name="time" [(ngModel)]="appointment.time" required>
+          </div>
+        </div>
+  
+        <!-- Reason for Visit -->
+        <div class="mb-3">
+          <label class="form-label">Reason for Visit</label>
+          <textarea class="form-control" name="reason" [(ngModel)]="appointment.reason" rows="3" required></textarea>
+        </div>
+  
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary w-100" [disabled]="!appointmentForm.form.valid">Book Appointment</button>
+      </form>
+    </div>
+  </div>

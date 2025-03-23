@@ -1,0 +1,43 @@
+<div class="container mt-4">
+    <div class="card shadow p-4">
+      <h2 class="text-center mb-3">Doctor’s Appointments</h2>
+  
+      <!-- Table to Display Appointments -->
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Patient Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Contact</th>
+            <th>Appointment Date</th>
+            <th>Time</th>
+            <th>Reason</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appointment of appointments">
+            <td>{{ appointment.patientName }}</td>
+            <td>{{ appointment.age }}</td>
+            <td>{{ appointment.gender }}</td>
+            <td>{{ appointment.contact }}</td>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.time }}</td>
+            <td>{{ appointment.reason }}</td>
+            <td>
+              <span class="badge bg-success" *ngIf="appointment.status === 'Confirmed'">Confirmed</span>
+              <span class="badge bg-warning text-dark" *ngIf="appointment.status === 'Pending'">Pending</span>
+              <span class="badge bg-danger" *ngIf="appointment.status === 'Cancelled'">Cancelled</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <!-- No Appointments Message -->
+      <div *ngIf="appointments.length === 0" class="text-center mt-3">
+        <p class="text-muted">No appointments scheduled.</p>
+      </div>
+    </div>
+  </div>
+  
