@@ -1,0 +1,90 @@
+<app-patient-navbar></app-patient-navbar>
+<div class="container mt-4" style="padding-top: 100px;">
+  <div class="card shadow p-4">
+    <!-- Bootstrap Alert -->
+    <div *ngIf="alertMessage" class="alert alert-{{ alertType }} alert-dismissible fade show" role="alert">
+      {{ alertMessage }}
+      <button type="button" class="btn-close" aria-label="Close" (click)="alertMessage = ''"></button>
+    </div>
+
+    <h2 class="text-center mb-3">Book an Appointment</h2>
+
+    <form #appointmentForm="ngForm" (ngSubmit)="submitForm()">
+      <!-- Patient Name -->
+      
+    
+      <!-- Age & Gender -->
+      <div class="row">
+        <div class="col-md-5 mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" name="patientName" [(ngModel)]="appointment.patientName" required>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label class="form-label">Age</label>
+          <input type="number" class="form-control" name="age" [(ngModel)]="appointment.age" required min="0">
+        </div>
+        <div class="col-md-5 mb-3">
+          <label class="form-label">Gender</label>
+          <select class="form-select" name="gender" [(ngModel)]="appointment.gender" required>
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+    
+      <!-- Contact Information -->
+       <div class="row">
+        <div class=" col-md-6">
+          <label class="form-label">Contact Number</label>
+          <input type="tel" class="form-control" name="contact" [(ngModel)]="appointment.contact" required>
+        </div>
+      
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Email (Optional)</label>
+          <input type="email" class="form-control" name="email" [(ngModel)]="appointment.email">
+        </div>
+       </div>
+      
+    
+      <!-- Doctor Selection -->
+      
+    
+      <!-- Date & Time -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Select Doctor</label>
+          <select class="form-select" name="doctorId" [(ngModel)]="appointment.doctorId" required>
+            <option [ngValue]="null">Choose a Doctor</option>
+            <option *ngFor="let doctor of availableDoctors" [ngValue]="doctor.doctorId">
+              Dr. {{ doctor.fullName }} - {{ doctor.specialization }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Preferred Date</label>
+          <input type="date" class="form-control" name="appointmentDate" [(ngModel)]="dateInput" required>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Preferred Time</label>
+          <input type="time" class="form-control" name="appointmentTime" [(ngModel)]="timeInput" required>
+        </div>
+      </div>
+    
+      <!-- Reason for Visit -->
+      <div class="mb-3">
+        <label class="form-label">Reason for Visit</label>
+        <textarea class="form-control" name="reason" [(ngModel)]="appointment.reason" rows="3" required></textarea>
+      </div>
+    
+      <!-- Submit Button -->
+       <div class=" row d-flex justify-content-center">
+         
+        <button type="submit" class="col-md-4 btn btn-primary " [disabled]="!appointmentForm.form.valid">Book Appointment</button>
+
+       </div>
+    </form>
+    
+  </div>
+</div>

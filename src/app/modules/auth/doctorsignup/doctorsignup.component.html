@@ -1,0 +1,29 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-5">
+    <div class="card p-4 shadow-lg"  style="max-width: 500px; margin: 0 auto;">
+      <h2 class="text-center mb-4">Doctor Signup</h2>
+      <div *ngIf="alertMessage" class="mb-3" [ngClass]="alertClass" role="alert">
+        {{ alertMessage }}
+      </div>
+      <form [formGroup]='form' (ngSubmit)="onSubmit()">
+        <div class="col mb-3">
+          <label for="doctorName" class="form-label">Full Name</label>
+          <input  class="form-control" id="doctorName" placeholder="Enter your full name" formControlName="fullName" required>
+        </div>
+        <div class="mb-3">
+          <label for="doctorEmailSignup" class="form-label">Email</label>
+          <input  class="form-control" id="doctorEmailSignup" placeholder="Enter your email" formControlName="email"required>
+        </div>
+        <div class="mb-3">
+          <label for="doctorPasswordSignup" class="form-label">Password</label>
+          <input  class="form-control" id="doctorPasswordSignup" placeholder="Create a password" formControlName="password"required>
+        </div>
+        <div class="mb-3">
+          <label for="doctorConfirmPassword" class="form-label">Confirm Password</label>
+          <input class="form-control" id="doctorConfirmPassword" placeholder="Confirm your password" formControlName="confirmPassword"required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Sign Up</button>
+      </form>
+    </div>
+  </div>

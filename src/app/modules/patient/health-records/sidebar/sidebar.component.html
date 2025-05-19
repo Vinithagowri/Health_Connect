@@ -1,0 +1,38 @@
+<ul class="nav flex-column text-start">
+    <li class="nav-item">
+      <a class="nav-link custom-nav-link"
+         [ngClass]="{ 'active-tab': selectedTab === 'basic-details' }"
+         (click)="selectComponent('basic-details')">
+        <i class="bi bi-person me-2"></i> Basic Details
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link custom-nav-link"
+         [ngClass]="{ 'active-tab': selectedTab === 'medical-history' }"
+         (click)="selectComponent('medical-history')">
+        <i class="bi bi-journal-medical me-2"></i> Medical History
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link custom-nav-link"
+         [ngClass]="{ 'active-tab': selectedTab === 'medications' }"
+         (click)="selectComponent('medications')">
+        <i class="bi bi-capsule me-2"></i> Medications
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link custom-nav-link"
+         [ngClass]="{ 'active-tab': selectedTab === 'lab-reports' }"
+         (click)="selectComponent('lab-reports')">
+        <i class="bi bi-clipboard2-pulse me-2"></i> Lab Reports
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link custom-nav-link"
+         [ngClass]="{ 'active-tab': selectedTab === 'hospitalization' }"
+         (click)="selectComponent('hospitalization')">
+        <i class="bi bi-hospital me-2"></i> Hospitalization
+      </a>
+    </li>
+  </ul>
+  

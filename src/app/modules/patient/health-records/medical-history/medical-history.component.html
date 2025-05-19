@@ -1,0 +1,60 @@
+<div class="card shadow p-4">
+    <h4>📜 Medical History</h4>
+
+    <!-- Read Mode -->
+    <div *ngIf="!isEditing">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Chronic Conditions</td>
+                    <td>{{ medicalHistory.chronicConditions.join(', ') | titlecase }}</td>
+                </tr>
+                <tr>
+                    <td>Allergies</td>
+                    <td>{{ medicalHistory.allergies.join(', ') | titlecase }}</td>
+                </tr>
+                <tr>
+                    <td>Past Surgeries</td>
+                    <td>{{ medicalHistory.pastSurgeries.join(', ') | titlecase}}</td>
+                </tr>
+                <tr>
+                    <td>Family Medical History</td>
+                    <td>{{ medicalHistory.familyHistory  | titlecase}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary mt-3" (click)="toggleEdit()">✏️ Edit</button>
+    </div>
+
+    <!-- Edit Mode -->
+    <div *ngIf="isEditing">
+        <div class="mb-3">
+            <label>Chronic Conditions:</label>
+            <input type="text" class="form-control" [(ngModel)]="editableHistory.chronicConditions">
+        </div>
+
+        <div class="mb-3">
+            <label>Allergies:</label>
+            <input type="text" class="form-control" [(ngModel)]="editableHistory.allergies">
+        </div>
+
+        <div class="mb-3">
+            <label>Past Surgeries:</label>
+            <input type="text" class="form-control" [(ngModel)]="editableHistory.pastSurgeries">
+        </div>
+
+        <div class="mb-3">
+            <label>Family Medical History:</label>
+            <textarea class="form-control" [(ngModel)]="editableHistory.familyHistory"></textarea>
+        </div>
+
+        <button class="btn btn-success mt-3 me-2" (click)="saveDetails()">💾 Save</button>
+        <button class="btn btn-secondary mt-3" (click)="toggleEdit()">❌ Cancel</button>
+    </div>
+</div>

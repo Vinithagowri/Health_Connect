@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#"> <i class="fa fa-stethoscope" aria-hidden="true"></i> HealthConnect</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item btn">
+                    <a class="nav-link" href="/doctor/appointments">
+                        <i class="fa fa-calendar-check"></i> View Appointments
+                    </a>
+                </li>
+                <li class="nav-item btn">
+                    <a class="nav-link" href="/doctor/patient-records">
+                        <i class="fa fa-user-md"></i> Patient Records
+                    </a>
+                </li>
+                <li class="nav-item btn">
+                    <a class="nav-link" href="/doctor/doc-dashboard">
+                        <i class="fa fa-tachometer-alt"></i> DashBoard
+                    </a>
+                </li>
+                <li class="nav-item btn">
+                    <a class="nav-link text-danger"(click)="logout()">
+                        <i class="fa fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

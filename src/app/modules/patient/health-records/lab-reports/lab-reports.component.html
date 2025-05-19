@@ -1,0 +1,33 @@
+<div class="card shadow p-4">
+    <h4>🧪 Lab Report Tracker</h4>
+
+    <!-- Lab Report List -->
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Report Name</th>
+                <th>Date</th>
+                <th>File</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let report of labReports; let i = index">
+                <td>{{ report.name | titlecase}}</td>
+                <td>{{ report.date }}</td>
+                <td>
+                    <a [href]="report.fileUrl" target="_blank" class="btn btn-info btn-sm">📂 View</a>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" >🗑️ Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Upload New Report -->
+    <div class="mt-4">
+        <h5>Upload New Report</h5>
+        <input type="file" (change)="uploadReport($event)" class="form-control">
+    </div>
+</div>

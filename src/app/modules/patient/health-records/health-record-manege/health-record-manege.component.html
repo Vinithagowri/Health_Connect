@@ -1,0 +1,21 @@
+<app-patient-navbar></app-patient-navbar> <!-- Static Navbar -->
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <aside class="col-md-3 col-lg-2 d-md-block sidebar custom-sidebar">
+            <app-sidebar (menuClick)="changeComponent($event)"></app-sidebar>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <!-- This will change based on the route -->
+            <app-basic-details *ngIf="activeComponent === 'basic-details'"></app-basic-details>
+            <app-medical-history *ngIf="activeComponent === 'medical-history'"></app-medical-history>
+            <app-medications *ngIf="activeComponent === 'medications'"></app-medications>
+            <app-lab-reports *ngIf="activeComponent === 'lab-reports'"></app-lab-reports>
+            <app-hospitalization *ngIf="activeComponent === 'hospitalization'"></app-hospitalization>
+
+        </main>
+    </div>
+</div>

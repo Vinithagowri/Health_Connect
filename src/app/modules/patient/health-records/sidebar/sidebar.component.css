@@ -1,0 +1,29 @@
+
+.custom-nav-link {
+    color: white !important;
+    transition: color 0.3s;
+}
+.custom-nav-link {
+    cursor: pointer; /* replaces text cursor with a pointer */
+    user-select: none; /* prevents text selection */
+  }
+  
+
+.custom-nav-link:hover {
+    color: rgb(252, 252, 252) !important;
+    background-color: #310878;
+  border-radius: 4px;
+}
+.nav-item{
+    padding-bottom: 5px;
+}
+.active-tab {
+    background-color: #007bff; /* Bootstrap primary */
+    color: white !important;
+    border-radius: 0.375rem;
+  }
+  
+  .active-tab i {
+    color: white !important;
+  }
+  

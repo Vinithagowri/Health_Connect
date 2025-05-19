@@ -1,0 +1,85 @@
+<div class="card shadow p-4">
+    <h4>🏥 Hospitalization History</h4>
+
+    <!-- Hospitalization Records -->
+    <table class="table table-striped mt-3" *ngIf="hospitalizations.length > 0">
+        <thead>
+            <tr>
+                <th>Place</th>
+                <th>Duration</th>
+                <th>Issue</th>
+                <th>Recovery Status</th>
+                <th>Admission Date</th>
+                <th>Discharge Date</th>
+                <th>Doctor</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let record of hospitalizations; let i = index">
+                <td>{{ record.place | titlecase}}</td>
+                <td>{{ record.duration }}</td>
+                <td>{{ record.issue | titlecase}}</td>
+                <td>{{ record.recoveryStatus | titlecase}}</td>
+                <td>{{ record.admissionDate }}</td>
+                <td>{{ record.dischargeDate }}</td>
+                <td>{{ record.doctor | titlecase}}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-2" (click)="editHospitalization(i)">✏️ Edit</button>
+                    <button class="btn btn-danger btn-sm" (click)="deleteHospitalization(i)">🗑️ Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Add/Edit Hospitalization Form -->
+    <div class="mt-4">
+        <h5 *ngIf="!isEditing">➕ Add New Hospitalization</h5>
+        <h5 *ngIf="isEditing">✏️ Edit Hospitalization</h5>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Hospital/Clinic:</label>
+                <input type="text" class="form-control" [(ngModel)]="newHospitalization.place">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Duration:</label>
+                <input type="text" class="form-control" [(ngModel)]="newHospitalization.duration">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Issue:</label>
+                <input type="text" class="form-control" [(ngModel)]="newHospitalization.issue">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Recovery Status:</label>
+                <select class="form-control" [(ngModel)]="newHospitalization.recoveryStatus">
+                    <option>Recovering</option>
+                    <option>Recovered</option>
+                    <option>Ongoing Treatment</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Admission Date:</label>
+                <input type="date" class="form-control" [(ngModel)]="newHospitalization.admissionDate">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Discharge Date:</label>
+                <input type="date" class="form-control" [(ngModel)]="newHospitalization.dischargeDate">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Doctor's Name:</label>
+                <input type="text" class="form-control" [(ngModel)]="newHospitalization.doctor">
+            </div>
+        </div>
+
+        <button class="btn btn-success mt-3 me-2" (click)="addHospitalization()">
+            {{ isEditing ? '💾 Save Changes' : '➕ Add Record' }}
+        </button>
+    </div>
+</div>
