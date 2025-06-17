@@ -1,42 +1,126 @@
 <app-doctor-navbar></app-doctor-navbar>
-<div class="container col-xxl-8 px-4 py-5">
-  <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-    <div class="col-10 col-sm-8 col-lg-6">
-      <img src="/bg.png" style="width: 40vh;" class="d-block mx-lg-auto img-fluid" alt="Doctor Dashboard Image" loading="lazy">
-    </div>
-    <div class="col-lg-6">
-      <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Hello <span style="color: rgb(182, 126, 58);">{{UserName | titlecase}}</span></h1>
-      <p class="lead">Manage your profile, appointments, and patient records easily with us.</p>
-
-      <div class="d-grid gap-3 d-md-flex justify-content-md-start flex-wrap">
-        <a routerLink="/doctor/profile" class="btn btn-primary btn-lg px-4 me-md-2"><i class="fa-solid fa-user p-2"></i>Manage Profile</a>
-        <a routerLink="/doctor/appointments" class="btn btn-outline-success btn-lg px-4 me-md-2"> <i class="fa fa-user-md"></i> Appointments</a>
-       
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-<!-- <app-doctor-navbar></app-doctor-navbar>
-<div class="container col-xxl-8 px-4 py-5">
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-      <div class="col-10 col-sm-8 col-lg-6">
-        <img src="/bg.png" style="width: 40vh;" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
-      </div>
-      <div class="col-lg-6">
-        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Hello {{UserName}}</h1>
-        <p class="lead">Manege Your Appointment and patient data Easily with us </p>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-          <a routerLink="/doctor/clinic-registration" class="btn btn-primary btn-lg px-4 me-md-2">Register Your Clinic</a>
-          <a routerLink="/doctor/apoint-details"class="btn btn-outline-secondary btn-lg px-4">View Appointments</a>
-      
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card text-center shadow">
+        <div class="card-body">
+          <i class="bi bi-clipboard-data display-4 text-primary"></i>
+          <h5 class="card-title mt-2">Total Appointments</h5>
+          <p class="card-text fs-4">{{ totalAppointments }}</p>
         </div>
       </div>
     </div>
-  </div> -->
+    <div class="col-md-3 mb-3">
+      <div class="card text-center shadow">
+        <div class="card-body">
+          <i class="bi bi-hourglass-split display-4 text-warning"></i>
+          <h5 class="card-title mt-2">Pending</h5>
+          <p class="card-text fs-4">{{ pendingAppointments }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card text-center shadow">
+        <div class="card-body">
+          <i class="bi bi-check-circle display-4 text-success"></i>
+          <h5 class="card-title mt-2">Completed</h5>
+          <p class="card-text fs-4">{{ completedAppointments }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card text-center shadow">
+        <div class="card-body">
+          <i class="bi bi-x-circle display-4 text-danger"></i>
+          <h5 class="card-title mt-2">Cancelled</h5>
+          <p class="card-text fs-4">{{ cancelledAppointments }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <i class="bi bi-bell"></i> today Appointments
+        </div>
+        <div class="card-body">
+          <p class="fs-5">{{ newAppointments }}</p>
+          <button class="btn btn-outline-primary" (click)="toggleTodayAppointments()">
+            <i class="bi bi-arrow-right"></i> {{ showTodayAppointments ? 'Hide' : 'View' }} Appointments
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-warning text-white">
+          <i class="bi bi-bell"></i> Action Needed Appointments
+        </div>
+        <div class="card-body">
+          <p class="fs-5">{{ upcomingAppointments.length }}</p>
+          <button class="btn btn-outline-warning" (click)="toggleActionNeededAppointments()">
+            <i class="bi bi-arrow-right"></i> {{ showActionNeededAppointments ? 'Hide' : 'View' }} Appointments
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <i class="bi bi-person-lines-fill"></i> Quick Links
+        </div>
+        <div class="card-body">
+          <button class="btn btn-outline-success mb-2 w-100" (click)="goToAppointmentsPage()">
+            <i class="bi bi-calendar-check"></i> Appointments Page
+          </button>
+          <button class="btn btn-outline-info w-100" (click)="goToPatientHistory()">
+            <i class="bi bi-people"></i> Patient History
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showTodayAppointments || showActionNeededAppointments" class="mt-5">
+    <h4 class="mb-3">{{ currentSectionTitle }}</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of displayedAppointments">
+          <td>{{ app.patientName }}</td>
+          <td>{{ app.appointmentDate | date: 'shortDate' }}</td>
+          <td>{{ app.appointmentDate | date: 'shortTime' }}</td>
+          <td>
+            <select [(ngModel)]="app.status" class="form-select form-select-sm">
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-primary" [disabled]="app.updating"
+              (click)="updateStatus(app.appointmentId, app.status, app)">
+              {{ app.updating ? 'Updating...' : 'Update' }}
+            </button>
+
+          </td>
+        </tr>
+        <tr *ngIf="displayedAppointments.length === 0">
+          <td colspan="5" class="text-center text-muted">No appointments to show.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

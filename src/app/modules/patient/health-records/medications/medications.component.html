@@ -1,75 +1,80 @@
 <div class="card shadow p-4">
-    <h4>💊 Medication Tracker</h4>
-  
-    <!-- Medication List -->
+    <h4><i class="bi bi-capsule"></i> Medication Tracker</h4>
+
     <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Medication</th>
-          <th>Dosage</th>
-          <th>Frequency</th>
-          <th>Status</th>
-          <th>Start</th>
-          <th>End</th>
-          <th>Notes</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let med of medications; let i = index">
-          <td>{{ med.medicationName | titlecase}}</td>
-          <td>{{ med.dosage  }}</td>
-          <td>{{ med.frequency | titlecase}}</td>
-          <td>
-            <span [ngClass]="{'text-success': med.status === 'Completed', 'text-danger': med.status !== 'Completed'}">
-              {{ med.status }}
-            </span>
-          </td>
-          <td>{{ med.startDate }}</td>
-          <td>{{ med.endDate }}</td>
-          <td>{{ med.notes }}</td>
-          <td>
-            <button class="btn btn-success btn-sm me-2" (click)="markAsTaken(i)">
-              {{ med.status === 'Completed' ? 'Undo' : 'Mark as Taken' }}
-            </button>
-            <button class="btn btn-danger btn-sm" (click)="removeMedication(i)">🗑️ Delete</button>
-          </td>
-        </tr>
-      </tbody>
+        <thead>
+            <tr>
+                <th>Medication</th>
+                <th>Dosage</th>
+                <th>Frequency</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let med of medications; let i = index">
+                <td>{{ med.medicationName | titlecase }}</td>
+                <td>{{ med.dosage }}</td>
+                <td>{{ med.frequency | titlecase }}</td>
+                <td>
+                    <span [ngClass]="{'text-success': med.status === 'Completed', 'text-danger': med.status !== 'Completed'}">
+                        {{ med.status }}
+                    </span>
+                </td>
+                <td>{{ med.startDate }}</td>
+                <td>{{ med.endDate }}</td>
+                <td>{{ med.notes }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" (click)="removeMedication(med.medicationId)">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        </tbody>
     </table>
-  
-    <!-- Add New Medication -->
+
     <div class="mt-4">
-      <h5>Add New Medication</h5>
-      <div class="row g-2">
-        <div class="col-md-3">
-          <input type="text" class="form-control" placeholder="Medication Name" [(ngModel)]="newMedication.medicationName" />
+        <h5><i class="bi bi-plus-circle"></i> Add New Medication</h5>
+        <div class="row g-2">
+            <div class="col-md-3">
+                <label class="mb-3">Medication Name :</label>
+                <input type="text" class="form-control" placeholder="Medication Name" [(ngModel)]="newMedication.medicationName" />
+            </div>
+            <div class="col-md-3">
+                <label for="" class="mb-3">Dosage :</label>
+                <input type="text" class="form-control" placeholder="Dosage" [(ngModel)]="newMedication.dosage" />
+            </div>
+            <div class="col-md-3">
+                <label for="" class="mb-3">Frequency :</label>
+                <input type="text" class="form-control" placeholder="Frequency" [(ngModel)]="newMedication.frequency" />
+            </div>
+            <div class="col-md-3">
+                <label for="" class="mb-3">Status :</label>
+                <select class="form-control" [(ngModel)]="newMedication.status">
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="" class="mb-3">Start Date :</label>
+                <input type="date" class="form-control" placeholder="Start Date" [(ngModel)]="newMedication.startDate" />
+            </div>
+            <div class="col-md-3 mt-2">
+                <label for="" class="mb-3">End Date :</label>
+                <input type="date" class="form-control" placeholder="End Date" [(ngModel)]="newMedication.endDate" />
+            </div>
+            <div class="col-md-6 mt-2">
+                <label for="" class="mb-3">Notes :</label>
+                <input type="text" class="form-control" placeholder="Notes" [(ngModel)]="newMedication.notes" />
+            </div>
+            <div class="col-md-3 mt-2">
+                <button class="btn btn-primary w-100" (click)="addMedication()">
+                    <i class="bi bi-plus-circle-fill"></i> Add
+                </button>
+            </div>
         </div>
-        <div class="col-md-2">
-          <input type="text" class="form-control" placeholder="Dosage" [(ngModel)]="newMedication.dosage" />
-        </div>
-        <div class="col-md-2">
-          <input type="text" class="form-control" placeholder="Frequency" [(ngModel)]="newMedication.frequency" />
-        </div>
-        <div class="col-md-2">
-          <select class="form-control" [(ngModel)]="newMedication.status">
-            <option value="Ongoing">Ongoing</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <input type="date" class="form-control" placeholder="Start Date" [(ngModel)]="newMedication.startDate" />
-        </div>
-        <div class="col-md-3 mt-2">
-          <input type="date" class="form-control" placeholder="End Date" [(ngModel)]="newMedication.endDate" />
-        </div>
-        <div class="col-md-6 mt-2">
-          <input type="text" class="form-control" placeholder="Notes" [(ngModel)]="newMedication.notes" />
-        </div>
-        <div class="col-md-3 mt-2">
-          <button class="btn btn-primary w-100" (click)="addMedication()">➕ Add</button>
-        </div>
-      </div>
     </div>
-  </div>
-  
+</div>

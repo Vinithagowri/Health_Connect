@@ -19,6 +19,8 @@ export class DoctorProfileComponent implements OnInit {
   isEditMode: boolean = false;
   doctorName: string = '';
  doctorEmail: string = '';
+ showAlert: boolean = false;
+  alertMessage: string = '';
   constructor(private doctorProfileService: DoctorProfileService) {}
 
   ngOnInit() {
@@ -48,13 +50,21 @@ export class DoctorProfileComponent implements OnInit {
     if (this.isProfileExist) {
       console.log(this.profile);
       this.doctorProfileService.updateProfile(this.profile).subscribe(() => {
-        alert('Profile updated successfully');
+        this.displayAlert('Profile updated successfully');
       });
     } else {
       this.doctorProfileService.createProfile(this.profile).subscribe(() => {
-        alert('Profile created successfully');
+        this.displayAlert('Profile created successfully');
         this.isProfileExist = true;
       });
     }
+  }
+  displayAlert(message: string) {
+    this.alertMessage = message;
+    this.showAlert = true;
+    setTimeout(() => this.showAlert = false, 3000); // auto-hide after 3 sec
+  }
+   closeAlert() {
+    this.showAlert = false;
   }
 }

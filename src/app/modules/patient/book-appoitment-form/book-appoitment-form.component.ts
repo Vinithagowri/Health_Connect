@@ -3,16 +3,20 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PatientNavbarComponent } from '../patient-navbar/patient-navbar.component';
 import { DoctorProfileService } from '../../../services/doctor-profile.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AppointmentService } from '../../../services/appointment.service';
+import { PatientRecordsService } from '../../../services/patient-records.service';
 
 @Component({
   selector: 'app-book-appoitment-form',
-  imports: [CommonModule,FormsModule,PatientNavbarComponent],
+  standalone: true,
+  imports: [CommonModule, FormsModule, PatientNavbarComponent],
   templateUrl: './book-appoitment-form.component.html',
   styleUrl: './book-appoitment-form.component.css'
 })
 export class BookAppoitmentFormComponent implements OnInit {
+
+  bookingFor: 'self' | 'others' = 'self';
 
   appointment = {
     appointmentId: 0,
@@ -21,64 +25,142 @@ export class BookAppoitmentFormComponent implements OnInit {
     gender: '',
     contact: '',
     email: '',
-    patientId: 0, // Set this from logged-in patient or route
+    patientId: 0,
     doctorId: 0,
-    appointmentDate: '', // '2025-04-12T07:40:28.742Z'
+    appointmentDate: '',
     reason: '',
     status: 'Pending',
-    doctorName:"" // Default status
+    doctorName: ""
   };
+
+  loggedInPatient: any = {}; 
 
   availableDoctors: any[] = [];
   dateInput: string = '';
- timeInput: string = '';
+  timeInput: string = '';
+  minDate: string = '';
+  alertMessage: string = '';
+  alertType: 'success' | 'danger' = 'success';
+
   constructor(
     private appointmentService: AppointmentService,
     private doctorProfileService: DoctorProfileService,
-    private router: Router
-  ) {}
+    private basicDetailsService: PatientRecordsService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
+    this.setMinDate();
     this.loadDoctors();
-    this.setPatientIdFromStorage(); // optional: if patient ID is stored locally
+    this.setPatientIdFromStorage();
+    this.route.queryParams.subscribe(params => {
+      const doctorId = params['doctorId'];
+      if (doctorId) {
+        this.appointment.doctorId = +doctorId;
+      }
+    });
+  }
+
+  setMinDate() {
+    const today = new Date();
+    this.minDate = today.toISOString().split('T')[0];
   }
 
   loadDoctors() {
     this.doctorProfileService.availableDoctors().subscribe({
-      next: (res) => this.availableDoctors = res,
+      next: (res) => {
+        this.availableDoctors = res;
+        if (this.appointment.doctorId) {
+          const selectedDoctor = this.availableDoctors.find(d => d.doctorId === this.appointment.doctorId);
+          if (selectedDoctor) {
+            this.appointment.doctorName = selectedDoctor.fullName;
+          }
+        }
+      },
       error: (err) => console.error('Failed to load doctors', err)
     });
   }
 
   setPatientIdFromStorage() {
     const id = localStorage.getItem('PatientId');
-    if (id) this.appointment.patientId = +id;
+    if (id) {
+      this.appointment.patientId = +id;
+      this.basicDetailsService.getBasicDetails(this.appointment.patientId).subscribe({
+        next: (data) => {
+          if (data && data.patientId) {
+            this.loggedInPatient = data;
+            this.prefillForSelf();
+          } else {
+            console.error('No patient data found');
+          }
+        },
+        error: () => {
+          console.error('Failed to load patient data');
+        }
+      });
+
+      this.prefillForSelf();
+    }
   }
 
-  
-alertMessage: string = '';
-alertType: 'success' | 'danger' = 'success'; 
-
-submitForm() {
-  const combinedDateTime = new Date(`${this.dateInput}T${this.timeInput}`);
-  this.appointment.appointmentDate = combinedDateTime.toISOString();
-  console.log('Submitting appointment:', this.appointment);
-
-  this.appointmentService.makeAppointment(this.appointment).subscribe({
-    next: () => {
-      // this.alertType = 'success';
-      // this.alertMessage = 'Appointment booked successfully';
-      // setTimeout(() => {
-      //   this.router.navigate(['/patient/appointments']);
-      // }, 2000); 
-      this.router.navigate(['/patient/appointment-confirmation']);
-
-    },
-    error: (err) => {
-      this.alertType = 'danger';
-      this.alertMessage = 'Failed to book appointment: ' + (err.error?.message || 'Unknown error');
+  onBookingForChange() {
+    if (this.bookingFor === 'self') {
+      this.prefillForSelf();
+    } else {
+      this.clearAppointmentFields();
     }
-  });
-}
+  }
 
+  prefillForSelf() {
+    console.log(this.loggedInPatient);
+    const dob = new Date(this.loggedInPatient.dateOfBirth);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    const patient = JSON.parse(localStorage.getItem('LoggedInPatient') || '{}');
+    
+    this.appointment.patientName = this.loggedInPatient.name;
+    this.appointment.age = age;
+    this.appointment.gender = this.loggedInPatient.gender;
+    this.appointment.contact = this.loggedInPatient.contact;
+    this.appointment.email = patient.email;
+  }
+
+  clearAppointmentFields() {
+    this.appointment.patientName = '';
+    this.appointment.age = 0;
+    this.appointment.gender = '';
+    this.appointment.contact = '';
+    this.appointment.email = '';
+  }
+
+  submitForm() {
+    const combinedDateTime = new Date(`${this.dateInput}T${this.timeInput}`);
+
+    const now = new Date();
+    const nowIST = new Date(now.getTime() + (5.5 * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
+    const twoHoursLaterIST = new Date(nowIST.getTime() + (2 * 60 * 60 * 1000));
+
+    if (combinedDateTime < twoHoursLaterIST) {
+      this.alertType = 'danger';
+      this.alertMessage = 'Please choose a time at least 2 hours from now (IST).';
+      return;
+    }
+
+    this.appointment.appointmentDate = combinedDateTime.toISOString();
+
+    this.appointmentService.makeAppointment(this.appointment).subscribe({
+      next: () => {
+        this.router.navigate(['/patient/appointment-confirmation']);
+      },
+      error: (err) => {
+        this.alertType = 'danger';
+        this.alertMessage = 'Failed to book appointment: ' + (err.error?.message || 'Unknown error');
+      }
+    });
+  }
 }

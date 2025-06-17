@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { PatientRecordsService } from '../../../../services/patient-records.service';
 
 @Component({
@@ -11,11 +11,15 @@ import { PatientRecordsService } from '../../../../services/patient-records.serv
   styleUrl: './basic-details.component.css'
 })
 export class BasicDetailsComponent implements OnInit {
-  patientId: number = Number(localStorage.getItem('PatientId'));
+  
+  patientId: number = 0;
   patient: any = {};
-  editablePatient: any = {};
-  isEditing = false;
-  isNew = false;
+  isEditMode: boolean = false;
+  isNew: boolean = false;
+
+  showAlert: boolean = false;
+  alertMessage: string = '';
+  alertType: 'success' | 'danger' = 'success';
 
   constructor(private patientService: PatientRecordsService) {}
 
@@ -29,61 +33,61 @@ export class BasicDetailsComponent implements OnInit {
       next: (data) => {
         if (data && data.patientId) {
           this.patient = data;
-          this.editablePatient = { ...data };
           this.isNew = false;
         } else {
-          // No data found, treat as new patient
-          this.setEmptyPatient();
+          this.isNew = true;
+          this.patient = this.getEmptyPatient();
         }
       },
-      error: (err) => {
-        console.error('Error loading data:', err);
-        alert('Failed to load patient data.');
+      error: () => {
+        this.showAlertMessage('Failed to load patient data.', 'danger');
       }
     });
   }
 
-  setEmptyPatient(): void {
-    this.isNew = true;
-    this.patient = {
+  getEmptyPatient() {
+    return {
       patientId: this.patientId,
       name: '',
-      dob: '',
+      dateOfBirth: '',
       bloodGroup: '',
       contact: '',
       gender: '',
       emergencyContact: ''
     };
-    this.editablePatient = { ...this.patient };
   }
 
   toggleEdit(): void {
-    this.isEditing = !this.isEditing;
-    if (!this.isEditing) {
-      this.editablePatient = { ...this.patient };
+    this.isEditMode = !this.isEditMode;
+    if (!this.isEditMode && !this.isNew) {
+      this.loadPatient(); 
     }
   }
 
-  saveDetails(): void {
-    const payload = { ...this.editablePatient, patientId: this.patientId };
-    const isCreating = this.isNew;
+  onSubmit(): void {
+    const payload = { ...this.patient, patientId: this.patientId };
 
-    const request$ = isCreating
+    const request$ = this.isNew
       ? this.patientService.createBasicDetails(payload)
       : this.patientService.updateBasicDetails(payload);
 
     request$.subscribe({
-      next: (res) => {
-        console.log('Save successful', res);
-        this.patient = { ...this.editablePatient };
-        this.isEditing = false;
+      next: () => {
+        this.showAlertMessage(this.isNew ? 'Details created successfully.' : 'Details updated successfully.', 'success');
+        this.isEditMode = false;
         this.isNew = false;
-        alert(isCreating ? 'Created successfully' : 'Updated successfully');
       },
-      error: (err) => {
-        console.error('Save failed:', err);
-        alert('Failed to save patient details.');
+      error: () => {
+        this.showAlertMessage('Failed to save details.', 'danger');
       }
     });
   }
+
+  showAlertMessage(message: string, type: 'success' | 'danger'): void {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    setTimeout(() => this.showAlert = false, 3000);
+  }
+
 }

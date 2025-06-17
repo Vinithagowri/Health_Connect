@@ -1,54 +1,74 @@
 <div class="card shadow p-4">
-    <h4>👤 Basic Patient Details</h4>
+
+    <h4><i class="bi bi-person-vcard"></i> Basic Patient Details</h4>
+
+    <!-- Alert -->
+    <div *ngIf="showAlert" class="alert mt-2" [ngClass]="'alert-' + alertType" role="alert">
+        {{ alertMessage }}
+    </div>
 
     <!-- View Mode -->
-    <div *ngIf="!isEditing">
-        <p><strong>Name:</strong> {{ patient.name | titlecase}}</p>
-        <p><strong>Date of Birth:</strong> {{ patient.dateOfBirth }}</p>
-        <p><strong>Blood Group:</strong> {{ patient.bloodGroup | uppercase }}</p>
-        <p><strong>Contact:</strong> {{ patient.contact }}</p>
-        <p><strong>Gender:</strong> {{ patient.gender | titlecase}}</p>
-        <p><strong>Emergency Contact:</strong> {{ patient.emergencyContact }}</p>
-        <button class="btn btn-primary mt-3" (click)="toggleEdit()">✏️ Edit</button>
+    <div *ngIf="!isEditMode; else editModeTemplate" class="mt-3">
+
+        <p><strong>Name:</strong> {{ (patient.name | uppercase) || '-' }}</p>
+        <p><strong>Date of Birth:</strong> {{ patient.dateOfBirth || '-' }}</p>
+        <p><strong>Blood Group:</strong> {{ patient.bloodGroup ? (patient.bloodGroup | uppercase) : '-' }}</p>
+        <p><strong>Contact:</strong> {{ patient.contact || '-' }}</p>
+        <p><strong>Gender:</strong> {{ patient.gender || '-' }}</p>
+        <p><strong>Emergency Contact:</strong> {{ patient.emergencyContact || '-' }}</p>
+
+        <button class="btn btn-primary mt-3" (click)="toggleEdit()">
+            <i class="bi bi-pencil-square"></i> Edit
+        </button>
     </div>
 
     <!-- Edit Mode -->
-    <div *ngIf="isEditing">
-        <div class="mb-2">
-            <label>Name:</label>
-            <input type="text" class="form-control" [(ngModel)]="editablePatient.name">
-        </div>
+    <ng-template #editModeTemplate>
+        <form (ngSubmit)="onSubmit()" class="mt-3">
 
-        <div class="mb-2">
-            <label>Date of Birth:</label>
-            <input type="date" class="form-control" [(ngModel)]="editablePatient.dateOfBirth">
-        </div>
+            <div class="mb-2">
+                <label>Name:</label>
+                <input type="text" class="form-control" [(ngModel)]="patient.name" name="name" required>
+            </div>
 
-        <div class="mb-2">
-            <label>Blood Group:</label>
-            <input type="text" class="form-control" [(ngModel)]="editablePatient.bloodGroup">
-        </div>
+            <div class="mb-2">
+                <label>Date of Birth:</label>
+                <input type="date" class="form-control" [(ngModel)]="patient.dateOfBirth" name="dob" required>
+            </div>
 
-        <div class="mb-2">
-            <label>Contact:</label>
-            <input type="text" class="form-control" [(ngModel)]="editablePatient.contact">
-        </div>
+            <div class="mb-2">
+                <label>Blood Group:</label>
+                <input type="text" class="form-control" [(ngModel)]="patient.bloodGroup" name="bloodGroup" required>
+            </div>
 
-        <div class="mb-2">
-            <label>Gender:</label>
-            <select class="form-control" [(ngModel)]="editablePatient.gender">
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-            </select>
-        </div>
+            <div class="mb-2">
+                <label>Contact:</label>
+                <input type="text" class="form-control" [(ngModel)]="patient.contact" name="contact" required>
+            </div>
 
-        <div class="mb-2">
-            <label>Emergency Contact:</label>
-            <input type="text" class="form-control" [(ngModel)]="editablePatient.emergencyContact">
-        </div>
+            <div class="mb-2">
+                <label>Gender:</label>
+                <select class="form-control" [(ngModel)]="patient.gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </div>
 
-        <button class="btn btn-success mt-3 me-2" (click)="saveDetails()">💾 Save</button>
-        <button class="btn btn-secondary mt-3" (click)="toggleEdit()">❌ Cancel</button>
-    </div>
+            <div class="mb-2">
+                <label>Emergency Contact:</label>
+                <input type="text" class="form-control" [(ngModel)]="patient.emergencyContact" name="emergencyContact">
+            </div>
+
+            <button type="submit" class="btn btn-success mt-3 me-2">
+                <i class="bi bi-save"></i> Save
+            </button>
+            <button type="button" class="btn btn-secondary mt-3" (click)="toggleEdit()">
+                <i class="bi bi-x-circle"></i> Cancel
+            </button>
+
+        </form>
+    </ng-template>
+
 </div>

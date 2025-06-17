@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../../pages/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
-import { PatientService, PatientModel } from '../../../services/patient.service';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthService, PatientModel } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-patientsignup',
@@ -21,13 +21,13 @@ export class PatientsignupComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private patientService: PatientService
+    private AuthService: AuthService
   ) {
     this.form = this.fb.group({
-      fullName: ['', Validators.required],
+      fullName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', [Validators.required,Validators.minLength(6)]]
     });
   }
 
@@ -55,9 +55,13 @@ export class PatientsignupComponent {
         password
       };
 
-      this.patientService.signupPatient(patientData).subscribe({
-        next: () => {
+      this.AuthService.signupPatient(patientData).subscribe({
+        next: (res) => {
           this.showAlert('Signup successful! Redirecting to dashboard...', 'success');
+          localStorage.setItem('PatientId', res.id); 
+          
+          localStorage.setItem('PatientName', res.fullName); 
+          localStorage.setItem('LoggedInPatient', JSON.stringify(res)); 
           setTimeout(() => {
             this.router.navigate(['/patient']);
           }, 2000);

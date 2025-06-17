@@ -1,0 +1,18 @@
+<app-doctor-navbar></app-doctor-navbar>
+<div class="container col-xxl-8 px-4 py-5">
+  <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+    <div class="col-10 col-sm-8 col-lg-6">
+      <img src="/bg.png" style="width: 40vh;" class="d-block mx-lg-auto img-fluid" alt="Doctor Dashboard Image" loading="lazy">
+    </div>
+    <div class="col-lg-6">
+      <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Hello <span style="color: rgb(182, 126, 58);">{{UserName | titlecase}}</span></h1>
+      <p class="lead">Manage your profile, appointments, and patient records easily with us.</p>
+
+      <div class="d-grid gap-3 d-md-flex justify-content-md-start flex-wrap">
+        <a routerLink="/doctor/profile" class="btn btn-primary btn-lg px-4 me-md-2"><i class="fa-solid fa-user p-2"></i>Manage Profile</a>
+        <a routerLink="/doctor/appointments" class="btn btn-outline-success btn-lg px-4 me-md-2"> <i class="fa fa-user-md"></i> Appointments</a>
+       
+      </div>
+    </div>
+  </div>
+</div>

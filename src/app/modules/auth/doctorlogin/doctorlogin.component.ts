@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DoctorService, LoginModel } from '../../../services/doctor.service'; // Adjust path accordingly
+
 import { NavbarComponent } from '../../../pages/navbar/navbar.component';
+import { AuthService, LoginModel } from '../../../services/auth.service';
+
 
 @Component({
   selector: 'app-doctorlogin',
@@ -20,7 +22,7 @@ export class DoctorloginComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private doctorService: DoctorService
+    private AuthService: AuthService
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -41,24 +43,38 @@ export class DoctorloginComponent {
     if (this.form.valid) {
       const loginData: LoginModel = this.form.value;
 
-      this.doctorService.loginDoctor(loginData).subscribe({
+      this.AuthService.loginDoctor(loginData).subscribe({
         next: (res) => {
           this.showAlert('Login successful! Redirecting...', 'success');
-          localStorage.setItem('doctorId', res.id); 
-           
-          localStorage.setItem('doctorName', res.fullName); 
-          localStorage.setItem('loggedInDoctor', JSON.stringify(res)); 
-          console.log(localStorage.getItem('doctorId')); 
-          console.log(res);
-          
+          localStorage.setItem('doctorId', res.id);
+
+          localStorage.setItem('doctorName', res.fullName);
+          localStorage.setItem('loggedInDoctor', JSON.stringify(res));
+
+
           setTimeout(() => this.router.navigate(['/doctor']), 2000);
         },
-        error: () => {
-          this.showAlert('Invalid email or password. Please try again.', 'danger');
+        error: (err) => {
+          let errorMsg = 'Something went wrong. Please try again later.';
+
+          if (err.status === 0) {
+            
+            errorMsg = 'Cannot connect to the server. Please check your internet connection or try again later.';
+          } else if (err.error?.message) {
+            
+            errorMsg = err.error.message;
+          } else if (err.status === 401 || err.status === 400) {
+            
+            errorMsg = 'Invalid email or password.';
+          }
+
+          console.error('Error:', err);
+          this.showAlert(errorMsg, 'danger');
         }
+
       });
     } else {
-      this.showAlert('Please enter valid credentials.', 'danger');
+      this.showAlert('Please fill all the fields correctly', 'danger');
     }
   }
 }

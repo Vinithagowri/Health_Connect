@@ -8,22 +8,22 @@
       </div>
       <form [formGroup]='form' (ngSubmit)="onSubmit()">
         <div class="col mb-3">
-          <label for="doctorName" class="form-label">Full Name</label>
+          <label for="doctorName" class="form-label">Full Name<span class="text-danger">*</span></label>
           <input  class="form-control" id="doctorName" placeholder="Enter your full name" formControlName="fullName" required>
         </div>
         <div class="mb-3">
-          <label for="doctorEmailSignup" class="form-label">Email</label>
+          <label for="doctorEmailSignup" class="form-label">Email<span class="text-danger">*</span></label>
           <input  class="form-control" id="doctorEmailSignup" placeholder="Enter your email" formControlName="email"required>
         </div>
         <div class="mb-3">
-          <label for="doctorPasswordSignup" class="form-label">Password</label>
-          <input  class="form-control" id="doctorPasswordSignup" placeholder="Create a password" formControlName="password"required>
+          <label for="doctorPasswordSignup" class="form-label">Password<span class="text-danger">*</span>(minimun lenth-6)</label>
+          <input type="password"  class="form-control" id="doctorPasswordSignup" placeholder="Create a password" formControlName="password"required>
         </div>
         <div class="mb-3">
-          <label for="doctorConfirmPassword" class="form-label">Confirm Password</label>
-          <input class="form-control" id="doctorConfirmPassword" placeholder="Confirm your password" formControlName="confirmPassword"required>
+          <label for="doctorConfirmPassword" class="form-label">Confirm Password<span class="text-danger">*</span></label>
+          <input type="password" class="form-control" id="doctorConfirmPassword" placeholder="Confirm your password" formControlName="confirmPassword"required>
         </div>
-        <button type="submit" class="btn btn-success w-100">Sign Up</button>
+        <button type="submit" class="btn btn-success w-100"> <i class="bi bi-person-plus me-1"></i> Sign Up</button>
       </form>
     </div>
   </div>

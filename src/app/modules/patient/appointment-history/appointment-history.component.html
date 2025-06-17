@@ -3,15 +3,46 @@
 <div class="container mt-4" style="padding-top: 100px;">
   <h2 class="text-center mb-4">My Appointments</h2>
 
-  <div *ngIf="appointments.length === 0" class="alert alert-info text-center">
+  <!-- Filters Section -->
+  <div class="row mb-4">
+  <div class="col-md-3 mb-2">
+    <input type="text" class="form-control" placeholder="Search by Doctor Name"
+           [(ngModel)]="doctorNameFilter" (ngModelChange)="applyFilters()">
+  </div>
+  <div class="col-md-3 mb-2">
+    <input type="text" class="form-control" placeholder="Search by Patient Name"
+           [(ngModel)]="patientNameFilter" (ngModelChange)="applyFilters()">
+  </div>
+  <div class="col-md-2 mb-2">
+    <input type="date" class="form-control"
+           [(ngModel)]="dateFilter" (ngModelChange)="applyFilters()">
+  </div>
+  <div class="col-md-2 mb-2">
+    <select class="form-select"
+            [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()">
+      <option value="">All Statuses</option>
+      <option value="Pending">Pending</option>
+      <option value="Confirmed">Confirmed</option>
+      <option value="Completed">Completed</option>
+      <option value="Cancelled">Cancelled</option>
+    </select>
+  </div>
+  <div class="col-md-1 mb-2 text-end">
+    <button class="btn btn-secondary w-100" (click)="clearFilters()">Clear</button>
+  </div>
+</div>
+
+
+  <div *ngIf="filteredAppointments.length === 0" class="alert alert-info text-center">
     No appointments found.
   </div>
 
-  <div *ngIf="appointments.length > 0" class="row">
-    <div *ngFor="let appt of appointments" class="col-md-6 mb-4">
-      <div class="card shadow-sm border-0">
+  <div *ngIf="filteredAppointments.length > 0" class="row">
+    <div *ngFor="let appt of filteredAppointments" class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm border-0">
         <div class="card-body">
           <h5 class="card-title">Dr. {{ appt.doctorName || 'N/A' | titlecase }}</h5>
+          <h6><strong>Patient Name:</strong> {{ appt.patientName || 'N/A' | titlecase }}</h6>
           <p class="mb-1"><strong>Date:</strong> {{ appt.appointmentDate | date: 'fullDate' }}</p>
           <p class="mb-1"><strong>Time:</strong> {{ appt.appointmentDate | date: 'shortTime' }}</p>
           <p class="mb-1"><strong>Reason:</strong> {{ appt.reason }}</p>

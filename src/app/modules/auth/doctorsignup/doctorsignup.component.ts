@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../../pages/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
-import { DoctorModel, DoctorService } from '../../../services/doctor.service';
 import {  HttpClientModule } from '@angular/common/http';
+import { AuthService, DoctorModel } from '../../../services/auth.service';
  // Adjust path as needed
 
 @Component({
@@ -22,13 +22,13 @@ export class DoctorsignupComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private doctorService: DoctorService
+    private AuthService: AuthService
   ) {
     this.form = this.fb.group({
-      fullName: ['', Validators.required],
+      fullName: ['',[Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', [Validators.required,Validators.minLength(6)]]
     });
   }
 
@@ -52,14 +52,20 @@ export class DoctorsignupComponent {
 
       const doctorData: DoctorModel = { fullName, email, password };
 
-      this.doctorService.signupDoctor(doctorData).subscribe({
-        next: () => {
+      this.AuthService.signupDoctor(doctorData).subscribe({
+        next: (res) => {
           this.showAlert('Signup successful! Redirecting to dashboard...', 'success');
+          localStorage.setItem('doctorId', res.id); 
+           
+          localStorage.setItem('doctorName', res.fullName); 
+          localStorage.setItem('loggedInDoctor', JSON.stringify(res)); 
+          console.log('Doctor signed up successfully:', res);
+         
           setTimeout(() => this.router.navigate(['/doctor']), 2000);
         },
         error: (err) => {
-          const errorMsg = err.error || 'Signup failed. Try again.';
-          console.log(errorMsg);
+          const errorMsg ='Signup failed. Try again.';
+        
           this.showAlert(errorMsg, 'danger');
         }
       });

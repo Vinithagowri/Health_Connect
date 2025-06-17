@@ -10,7 +10,9 @@
    
     transform: scale(1.1);
   }
-  
+  .navbar{
+    height: 80px;
+  }
   .navbar-nav .nav-link.active {
     color: #FFD700;
     font-size: 1.2rem;

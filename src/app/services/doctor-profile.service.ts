@@ -4,10 +4,10 @@ import { environment } from '../../environments/environments';
 
 @Injectable({ providedIn: 'root' })
 export class DoctorProfileService {
-  // private apiUrl = 'http://localhost:5270/api/Doctor';
+  
   private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
-  // /api/DoctorProfile/getDoctorProfileById/{doctorId}
+  
   getProfile(doctorId: number) {
     return this.http.get(`${this.apiUrl}Doctor/getDoctorProfileById/${doctorId}`);
   }

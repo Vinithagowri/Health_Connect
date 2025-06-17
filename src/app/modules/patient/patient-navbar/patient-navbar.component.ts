@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-patient-navbar',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './patient-navbar.component.html',
   styleUrl: './patient-navbar.component.css'
 })

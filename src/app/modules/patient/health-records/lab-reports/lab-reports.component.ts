@@ -12,7 +12,7 @@ import { PatientRecordsService } from '../../../../services/patient-records.serv
 export class LabReportsComponent implements OnInit {
   labReports: any[] = [];
   patientId = Number(localStorage.getItem("PatientId")); // Replace with dynamic patient ID if needed
-
+  isLabReportAvailable: boolean = true;
   constructor(private LabReportsService: PatientRecordsService) {}
 
   ngOnInit(): void {
@@ -22,16 +22,47 @@ export class LabReportsComponent implements OnInit {
   loadReports(): void {
     this.LabReportsService.getLabReports(this.patientId).subscribe({
       next: (res) => {
+        console.log('Lab reports loaded:', res);
         this.labReports = res.map(report => ({
+          reportId:report.reportId,
           name: report.reportName,
           date: new Date(report.reportDate).toLocaleDateString()
         }));
       },
       error: () => {
-        alert('Failed to load lab reports.');
+        // alert('Failed to load lab reports.');
+        this.isLabReportAvailable = false;
       }
     });
   }
+  deleteReport(reportId: number): void {
+    console.log('Deleting report with ID:', reportId);
+    if (confirm('Are you sure you want to delete this report?')) {
+      this.LabReportsService.deleteLabReport(reportId).subscribe({
+        next: () => {
+          alert('Report deleted successfully!');
+          this.loadReports();
+        },
+        error: () => {
+          alert('Failed to delete report.');
+        }
+      });
+    }
+  }
+  downloadReport(reportId: number, reportName: string) {
+  this.LabReportsService.downloadLabReport(reportId).subscribe(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = reportName;  // give it a proper filename
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }, error => {
+    console.error('Download error:', error);
+  });
+}
 
   uploadReport(event: any): void {
     const file = event.target.files[0];

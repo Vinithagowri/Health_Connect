@@ -1,18 +1,103 @@
 <app-patient-navbar></app-patient-navbar>
-<div class="container col-xxl-8 px-4 py-5" style="margin-top: 70px;">
-  <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-    <div class="col-10 col-sm-8 col-lg-6">
-      <img src="learn.png" style="width: 40vh;" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700"
-        height="500" loading="lazy">
-    </div>
-    <div class="col-lg-6">
-      <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Hello <span style="color: chocolate; font-style: italic;">{{UserName | titlecase}}</span> </h1>
-      <p class="lead">Manege Your health record and make Appointments easily </p>
-      <div class="d-grid gap-2 d-md-flex justify-content-md-start"> 
-        <a href="/patient/book-appointment" class="btn btn-primary btn-lg px-4 me-md-2"><i class="fa fa-calendar-check " style="padding-right: 10px;"></i>Make Appointment</a>
-        <a href="/patient/health-record" class="btn btn-outline-success btn-lg px-4"> <i class="fa fa-file-medical" aria-hidden="true" style="padding-right: 10px;"></i> Manage Health Record</a>
 
+<div class="container mt-40" style="padding-top: 100px;">
+  <!-- 1️⃣ Appointment Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3" *ngFor="let card of [
+      {title: 'Total Appointments', count: totalAppointments, icon: 'calendar-check', color: 'primary'},
+      {title: 'Pending Appointments', count: pendingAppointments, icon: 'hourglass-half', color: 'warning'},
+      {title: 'Completed Appointments', count: completedAppointments, icon: 'check-circle', color: 'success'},
+      {title: 'Cancelled Appointments', count: cancelledAppointments, icon: 'times-circle', color: 'danger'}
+    ]">
+      <div class="card text-white bg-{{card.color}} mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-{{card.icon}} me-2"></i> {{card.title}}
+          </h5>
+          <p class="card-text display-4">{{card.count}}</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <i class="bi bi-bell"></i> Recently Visited Doctors
+        </div>
+        <div class="card-body">
+
+          <button class="btn btn-outline-primary" (click)="showAllDoctors = !showAllDoctors">
+            {{ showAllDoctors ? 'Hide All Doctors' : 'View All Doctors' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-warning text-white">
+          <i class="bi bi-bell"></i> Upcoming Appointments
+        </div>
+        <div class="card-body">
+          
+          <button class="btn btn-outline-info" (click)="showAllAppointments = !showAllAppointments">
+        {{ showAllAppointments ? 'Hide All Appointments' : 'View All Appointments' }}
+      </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <i class="bi bi-person-lines-fill"></i> Quick Links
+        </div>
+        <div class="card-body">
+          <button class="btn btn-outline-success mb-2 w-100" (click)="goToAppointmentHistory()">
+            <i class="bi bi-calendar-check"></i> Appointment History
+          </button>
+          <button class="btn btn-outline-info w-100" (click)="goToHealthRecord()">
+            <i class="bi bi-people"></i> Health Records
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 🔽 Expanded Data Sections at Bottom -->
+    <div *ngIf="showAllDoctors" class="mt-5">
+      <h4>All Recently Visited Doctors</h4>
+      <div class="row">
+        <div class="col-md-3 mb-3" *ngFor="let doctor of recentlyVisitedDoctors">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Dr. {{doctor.doctorName | titlecase}}</h5>
+              <p class="card-text">{{doctor.specialization | titlecase}}</p>
+              <p>Last visit: {{doctor.lastAppointmentDate | date}}</p>
+              <button class="btn btn-primary" [routerLink]="['/patient/book-appointment']"
+                        [queryParams]="{ doctorId: doctor.doctorId }">
+                        Book Again
+                    </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="showAllAppointments" class="mt-5">
+      <h4>All Upcoming Appointments</h4>
+      <div class="row">
+        <h5 *ngIf="upcomingAppointments.length ==0" class="text-danger text-center">No Upcoming Appointments</h5>
+        <div class="col-md-4 mb-3" *ngFor="let appt of upcomingAppointments">
+          <div class="card">
+            <div class="card-body">
+              <h5>{{appt.doctorName | titlecase}}</h5>
+              <p>Date: {{appt.appointmentDate | date:'mediumDate'}}, Time: {{appt.appointmentDate | date:'shortTime'}}
+              </p>
+              <p>Status: <span class="badge bg-warning text-dark">{{appt.status}}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>

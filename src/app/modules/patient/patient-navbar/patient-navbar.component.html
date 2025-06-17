@@ -3,31 +3,66 @@
         <a class="navbar-brand" href="#">
             <i class="fa fa-stethoscope" aria-hidden="true"></i> HealthConnect
         </a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item btn">
-                    <a class="nav-link" href="/patient/appoint-history">
-                        <i class="fa fa-history" aria-hidden="true"></i> Appointment History
+                <li class="nav-item">
+                    <a class="btn btn-info p-2 me-2" [routerLink]="'/patient/search-doctor'" routerLinkActive="active">
+                        <i class="fa fa-search me-2"></i> Search Doctors
                     </a>
                 </li>
-                <li class="nav-item btn">
-                    <a class="nav-link" href="/patient/health-record">
-                        <i class="fa fa-file-medical" aria-hidden="true"></i> View Health Record
+                
+                <li class="nav-item">
+                    <a class="btn btn-warning p-2 me-2" [routerLink]="'/patient/health-record'" routerLinkActive="active">
+                        <i class="fa fa-file-medical me-2"></i> Manage Health Records
                     </a>
                 </li>
-                <li class="nav-item btn">
-                    <a class="nav-link" href="/patient/pat-dashboard">
-                        <i class="fa fa-tachometer-alt" aria-hidden="true"></i> Dashboard
+                <li class="nav-item">
+                    <a class="btn btn-success p-2 me-2" [routerLink]="'/patient/book-appointment'"
+                        routerLinkActive="active">
+                        <i class="fa fa-calendar-plus me-2"></i> Make Appointment
                     </a>
                 </li>
-                <li class="nav-item btn">
-                    <a class="nav-link text-danger" (click)="logout()">
-                        <i class="fa fa-sign-out-alt" aria-hidden="true"></i> Logout
+
+
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-bars me-2"></i> More
                     </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" [routerLink]="'/patient/patient-home'" routerLinkActive="active">
+                                <i class="bi bi-house-door-fill me-2"></i> Home
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" [routerLink]="'/patient/appoint-history'"
+                                routerLinkActive="active">
+                                <i class="fa fa-history me-2"></i> Appointment History
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" [routerLink]="'/patient/patient-dashboard'" routerLinkActive="active">
+                                <i class="fa fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" (click)="logout()">
+                                <i class="fa fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
             </ul>
         </div>
     </div>

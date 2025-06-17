@@ -10,7 +10,9 @@ import { PatientRecordsService } from '../../../../services/patient-records.serv
 })
 export class MedicalHistoryComponent implements OnInit {
   isEditing: boolean = false;
-  patientId: number = Number(localStorage.getItem('PatientId')); // Replace with actual patient ID (e.g., from login/session)
+  patientId: number = Number(localStorage.getItem('PatientId')); 
+  alertMessage: string = '';
+  alertClass: string = '';
 
   medicalHistory: any = {
     chronicConditions: [],
@@ -33,7 +35,14 @@ export class MedicalHistoryComponent implements OnInit {
       this.editableHistory = { ...this.medicalHistory };
     }
   }
-
+  showAlert(message: string, type: 'success' | 'danger') {
+    this.alertMessage = message;
+    this.alertClass = `alert alert-${type}`;
+    setTimeout(() => {
+      this.alertMessage = '';
+      this.alertClass = '';
+    }, 3000);
+  }
   fetchMedicalHistory(): void {
     this.patientRecordsService.getMedicalHistory(this.patientId).subscribe({
       next: (data) => {
@@ -70,11 +79,13 @@ export class MedicalHistoryComponent implements OnInit {
       next: () => {
         this.medicalHistory = { ...this.editableHistory };
         this.isEditing = false;
-        alert('Medical history saved successfully.');
+        this.showAlert('Medical history saved successfully.', 'success');
+     
       },
       error: (err) => {
         console.error('Error saving medical history', err);
-        alert('Failed to save medical history.');
+        this.showAlert('Failed to save medical history.', 'danger');
+       
       }
     });
   }

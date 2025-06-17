@@ -5,6 +5,9 @@ import { BookAppoitmentFormComponent } from './book-appoitment-form/book-appoitm
 import { AppointmentHistoryComponent } from './appointment-history/appointment-history.component';
 import { HealthRecordsModule } from './health-records/health-records.module';
 import { AppintmentConfirmationComponent } from './appintment-confirmation/appintment-confirmation.component';
+import { SearchDoctorsComponent } from './search-doctors/search-doctors.component';
+import { PatientHomeComponent } from './patient-home/patient-home.component';
+
 
 // const routes: Routes = [
 //   {path:'pat-dashboard',component:PatientDashboardComponent},
@@ -14,12 +17,14 @@ import { AppintmentConfirmationComponent } from './appintment-confirmation/appin
 //     {path:'',redirectTo:'pat-dashboard',pathMatch:'full'},
 // ];
 const routes: Routes = [
-  { path: 'pat-dashboard', component: PatientDashboardComponent },
+  { path: 'patient-home', component: PatientHomeComponent },
+  { path: 'patient-dashboard', component: PatientDashboardComponent },
   { path: 'book-appointment', component: BookAppoitmentFormComponent },
   { path: 'appoint-history', component: AppointmentHistoryComponent },
   { path: 'appointment-confirmation', component: AppintmentConfirmationComponent },
+  { path: 'search-doctor', component: SearchDoctorsComponent },
   { path: 'health-record', loadChildren: () => import('./health-records/health-records.module').then(m => m.HealthRecordsModule) },
-  { path: '', redirectTo: 'pat-dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'patient-home', pathMatch: 'full' },
 ];
 
 

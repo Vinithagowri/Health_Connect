@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environments';
 
-// const BASE_URL = 'http://localhost:5270/api/PatientRecords'; // Adjust port accordingly
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +32,14 @@ export class PatientRecordsService {
   getLabReports(patientId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}PatientRecords/getLabreportsByPatientId/${patientId}`);
   }
+  deleteLabReport(ReportId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}PatientRecords/deleteLabReportById/${ReportId}`);
+  }
+  downloadLabReport(reportId: number): Observable<Blob> {
+  return this.http.get(`${this.apiUrl}PatientRecords/downloadLabReportById/${reportId}`, {
+    responseType: 'blob'  
+  });
+}
 
   addOrUpdateMedicalHistory(history: any): Observable<any> {
     return this.http.post(`${this.apiUrl}PatientRecords/addMedicalHistory`, history);
@@ -51,12 +58,17 @@ export class PatientRecordsService {
     return this.http.get<any[]>(`${this.apiUrl}PatientRecords/getMedicationsByPatientId/${patientId}`);
   }
 
-
+  deleteMedication(MedicationId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}PatientRecords/deleteMedicationbyId/${MedicationId}`);
+  }
   addHospitalization(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}PatientRecords/addHospitalizationRecord`, data);
   }
 
   getHospitalizations(patientId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}PatientRecords/getHospitalizationsRecordsByPatientId/${patientId}`);
+  }
+  deleteHospitalization(hospitalizationId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}PatientRecords/deleteHospitalizationbyId/${hospitalizationId}`);
   }
 }

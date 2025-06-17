@@ -7,22 +7,31 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item btn">
-                    <a class="nav-link" href="/doctor/appointments">
+                    <a class="nav-link"
+                       [routerLink]="'/doctor/doc-home'"
+                       routerLinkActive="active">
+                        <i class="bi bi-house-door-fill"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item btn">
+                    <a class="nav-link"
+                       [routerLink]="'/doctor/appointments'"
+                       routerLinkActive="active">
                         <i class="fa fa-calendar-check"></i> View Appointments
                     </a>
                 </li>
                 <li class="nav-item btn">
-                    <a class="nav-link" href="/doctor/patient-records">
-                        <i class="fa fa-user-md"></i> Patient Records
+                    <a class="nav-link" [routerLink]="'/doctor/patient-records'" routerLinkActive="active">
+                        <i class="fa fa-user-md"></i> Patient History
                     </a>
                 </li>
                 <li class="nav-item btn">
-                    <a class="nav-link" href="/doctor/doc-dashboard">
+                    <a class="nav-link" [routerLink]="'/doctor/doc-dashboard'" routerLinkActive="active">
                         <i class="fa fa-tachometer-alt"></i> DashBoard
                     </a>
                 </li>
                 <li class="nav-item btn">
-                    <a class="nav-link text-danger"(click)="logout()">
+                    <a class="nav-link text-danger"href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                         <i class="fa fa-sign-out-alt"></i> Logout
                     </a>
                 </li>
@@ -30,3 +39,21 @@
         </div>
     </div>
 </nav>
+
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to logout?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>

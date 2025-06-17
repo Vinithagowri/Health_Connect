@@ -5,14 +5,16 @@ import { DoctorDashboardComponent } from './doctor-dashboard/doctor-dashboard.co
 import { AppointmentDetailsComponent } from './appointment-list/appointment-details.component';
 import { DoctorProfileComponent } from './doctor-profile/doctor-profile.component';
 import { PatientRecordsComponent } from './patient-records/patient-records.component';
+import { DoctorHomeComponent } from './doctor-home/doctor-home.component';
+
 
 const routes: Routes = [
-  {path:'doc-dashboard',component:DoctorDashboardComponent},
+  {path:'doc-home',component:DoctorHomeComponent},
   {path:'profile',component:DoctorProfileComponent},
   {path:'patient-records',component:PatientRecordsComponent},
-  // {path:'clinic-registration',component:ClinicRegistrationComponent},
   {path:'appointments',component:AppointmentDetailsComponent},
-  {path:'',redirectTo:'doc-dashboard',pathMatch:'full'},
+  {path:'doc-dashboard',component:DoctorDashboardComponent},
+  {path:'',redirectTo:'doc-home',pathMatch:'full'},
 ];
 
 @NgModule({

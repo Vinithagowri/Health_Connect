@@ -12,7 +12,14 @@ import { AppointmentService } from '../../../services/appointment.service';
 })
 export class AppointmentHistoryComponent implements OnInit {
   appointments: any[] = [];
+  filteredAppointments: any[] = [];
   patientId: any = localStorage.getItem("PatientId");
+
+  // Filters
+  doctorNameFilter: string = '';
+  patientNameFilter: string = '';
+  dateFilter: string = '';
+  statusFilter: string = '';
 
   constructor(private appointmentService: AppointmentService) {}
 
@@ -24,6 +31,7 @@ export class AppointmentHistoryComponent implements OnInit {
     this.appointmentService.getAppointmentsByPatientId(this.patientId).subscribe({
       next: (data) => {
         this.appointments = data;
+        this.applyFilters();
       },
       error: (err) => {
         console.error('Failed to load appointments:', err);
@@ -31,17 +39,46 @@ export class AppointmentHistoryComponent implements OnInit {
     });
   }
 
+  applyFilters() {
+    this.filteredAppointments = this.appointments.filter(appt => {
+      const matchesDoctor = this.doctorNameFilter
+        ? appt.doctorName?.toLowerCase().includes(this.doctorNameFilter.toLowerCase())
+        : true;
+
+      const matchesPatient = this.patientNameFilter
+        ? appt.patientName?.toLowerCase().includes(this.patientNameFilter.toLowerCase())
+        : true;
+
+      const matchesDate = this.dateFilter
+        ? new Date(appt.appointmentDate).toISOString().slice(0, 10) === this.dateFilter
+        : true;
+
+      const matchesStatus = this.statusFilter
+        ? appt.status === this.statusFilter
+        : true;
+
+      return matchesDoctor && matchesPatient && matchesDate && matchesStatus;
+    });
+  }
+  clearFilters() {
+  this.doctorNameFilter = '';
+  this.patientNameFilter = '';
+  this.dateFilter = '';
+  this.statusFilter = '';
+  this.applyFilters();
+}
+
   cancelAppointment(appointmentId: number) {
     const confirmCancel = confirm("Are you sure you want to cancel this appointment?");
-    
     if (!confirmCancel) return;
-    console.log("Cancelling appointment with ID:", appointmentId);
-    const status='Cancelled';
-    this.appointmentService.updateAppointmentStatus(appointmentId,status).subscribe({
+
+    const status = 'Cancelled';
+    this.appointmentService.updateAppointmentStatus(appointmentId, status).subscribe({
       next: () => {
         this.appointments = this.appointments.map(appt =>
           appt.appointmentId === appointmentId ? { ...appt, status: 'Cancelled' } : appt
         );
+        this.applyFilters();
         alert("Appointment cancelled successfully.");
       },
       error: (err) => {

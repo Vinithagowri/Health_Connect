@@ -1,0 +1,18 @@
+<app-patient-navbar></app-patient-navbar>
+<div class="container col-xxl-8 px-4 py-5" style="margin-top: 70px;">
+  <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+    <div class="col-10 col-sm-8 col-lg-6">
+      <img src="learn.png" style="width: 40vh;" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700"
+        height="500" loading="lazy">
+    </div>
+    <div class="col-lg-6">
+      <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Hello <span style="color: chocolate; font-style: italic;">{{UserName | titlecase}}</span> </h1>
+      <p class="lead">Manege Your health record and make Appointments easily </p>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-start"> 
+        <a href="/patient/book-appointment" class="btn btn-primary btn-lg px-4 me-md-2"><i class="fa fa-calendar-check " style="padding-right: 10px;"></i>Make Appointment</a>
+        <a href="/patient/health-record" class="btn btn-outline-success btn-lg px-4"> <i class="fa fa-file-medical" aria-hidden="true" style="padding-right: 10px;"></i> Manage Health Record</a>
+
+      </div>
+    </div>
+  </div>
+</div>

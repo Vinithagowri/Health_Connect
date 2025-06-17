@@ -80,7 +80,16 @@ export class MedicationsComponent implements OnInit {
     this.medications[index].status = this.medications[index].status === 'Completed' ? 'Ongoing' : 'Completed';
   }
 
-  removeMedication(index: number): void {
-    this.medications.splice(index, 1); // Local delete for now; backend delete can be added later
+  removeMedication(MedicationId:number): void {
+    if (confirm('Are you sure you want to delete this medication?')) {
+      this.medicationService.deleteMedication(MedicationId).subscribe({
+        next: () => {
+          this.fetchMedications();
+        },
+        error: (err) => {
+          console.error('Failed to delete medication:', err);
+        }
+      });
+    }
   }
 }

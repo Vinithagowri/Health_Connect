@@ -60,9 +60,17 @@ export class HospitalizationComponent implements OnInit {
     this.newHospitalization = { ...this.hospitalizations[index] };
   }
 
-  deleteHospitalization(index: number): void {
-    // No delete API yet, so just remove from view
-    this.hospitalizations.splice(index, 1);
+  deleteHospitalization(id: number): void {
+    if(confirm('Are you sure you want to delete this record?')) {
+    this.hospitalizationService.deleteHospitalization(id).subscribe({
+      next: () => {
+        alert('Record deleted successfully');
+        this.loadHospitalizations();
+        
+      },
+      error: (err) => console.error('Error deleting record:', err)
+    });
+  }
   }
 
   resetHospitalization(): any {

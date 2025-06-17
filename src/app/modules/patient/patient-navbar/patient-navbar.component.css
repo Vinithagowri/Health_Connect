@@ -4,7 +4,9 @@
     font-size: 1.1rem;
     transition: color 0.3s ease, transform 0.2s ease;
   }
-  
+  .navbar{
+    height: 80px;
+  }
   .navbar-nav .nav-link:hover {
     color: #FFD700;
     

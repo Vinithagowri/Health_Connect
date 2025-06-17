@@ -1,0 +1,21 @@
+td.status-cell {
+  color: #212529;
+  font-weight: 500;
+}
+
+td.status-pending {
+  background-color: rgba(255, 193, 7, 0.2); /* yellow */
+}
+
+td.status-confirmed {
+  background-color: rgba(23, 162, 184, 0.2); /* blue */
+}
+
+td.status-completed {
+  background-color: rgba(40, 167, 69, 0.2); /* green */
+}
+
+td.status-cancelled {
+  background-color: rgba(220, 53, 69, 0.2); /* red */
+}
+

@@ -1,0 +1,43 @@
+<app-patient-navbar></app-patient-navbar>
+
+
+<div class="container my-4" style="padding-top: 70px;">
+    <h2 class="mb-4">Find a Doctor</h2>
+
+
+    <div class="input-group mb-4">
+        <input type="text" class="form-control" placeholder="Search by name, specialization, location..."
+            [(ngModel)]="searchTerm" (input)="searchDoctors()">
+        <span class="input-group-text">
+            <i class="bi bi-search"></i>
+        </span>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let doctor of filteredDoctors">
+            <div class="card h-100 shadow">
+                <div class="card-body"style="height: 70%;">
+                    <div class="mb-3">
+                        <h5 class="card-title">Dr.{{ doctor.fullName | titlecase}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ doctor.specialization | titlecase }}</h6>
+                        <p class="card-text">
+                            <strong>Clinic:</strong> {{ doctor.clinicName | titlecase}}<br>
+                            <strong>Address:</strong> {{ doctor.clinicAddress | titlecase}}, {{ doctor.city | titlecase
+                            }}, {{ doctor.state | titlecase }}<br>
+                        </p>
+                    </div>
+
+                    <button class="btn btn-primary" [routerLink]="['/patient/book-appointment']"
+                        [queryParams]="{ doctorId: doctor.doctorId }">
+                        Book Appointment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="filteredDoctors.length === 0" class="alert alert-warning mt-3">
+        No doctors found matching your search.
+    </div>
+</div>
