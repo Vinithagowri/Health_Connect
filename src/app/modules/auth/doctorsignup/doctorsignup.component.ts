@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../pages/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import {  HttpClientModule } from '@angular/common/http';
 import { AuthService, DoctorModel } from '../../../services/auth.service';
- // Adjust path as needed
+
 
 @Component({
   selector: 'app-doctorsignup',
 
-  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FormsModule,HttpClientModule],
+  imports: [ReactiveFormsModule, NavbarComponent,RouterModule, CommonModule, FormsModule,HttpClientModule],
   templateUrl: './doctorsignup.component.html',
   styleUrl: './doctorsignup.component.css'
 })
@@ -55,11 +55,12 @@ export class DoctorsignupComponent {
       this.AuthService.signupDoctor(doctorData).subscribe({
         next: (res) => {
           this.showAlert('Signup successful! Redirecting to dashboard...', 'success');
-          localStorage.setItem('doctorId', res.id); 
-           
-          localStorage.setItem('doctorName', res.fullName); 
-          localStorage.setItem('loggedInDoctor', JSON.stringify(res)); 
-          console.log('Doctor signed up successfully:', res);
+          localStorage.setItem('AuthToken', res.token);
+          localStorage.setItem('doctorId', res.doctor.id);
+
+          localStorage.setItem('doctorName', res.doctor.fullname);
+          localStorage.setItem('loggedInDoctor', JSON.stringify(res.doctor));
+
          
           setTimeout(() => this.router.navigate(['/doctor']), 2000);
         },
@@ -73,4 +74,9 @@ export class DoctorsignupComponent {
       this.showAlert('Please fill all required fields correctly.', 'danger');
     }
   }
+  get passwordMismatch(): boolean {
+  const { password, confirmPassword } = this.form.value;
+  return password && confirmPassword && password !== confirmPassword;
+}
+
 }

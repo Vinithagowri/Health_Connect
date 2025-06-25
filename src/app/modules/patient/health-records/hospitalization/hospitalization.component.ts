@@ -24,7 +24,8 @@ export class HospitalizationComponent implements OnInit {
   isEditing = false;
   editingIndex: number | null = null;
   newHospitalization: any = this.resetHospitalization();
-
+  alertMessage: string = '';
+alertType: 'success' | 'danger' = 'success';
   patientId: number = Number(localStorage.getItem('PatientId')); 
 
   constructor(private hospitalizationService: PatientRecordsService) {}
@@ -45,6 +46,8 @@ export class HospitalizationComponent implements OnInit {
 
     this.hospitalizationService.addHospitalization(this.newHospitalization).subscribe({
       next: () => {
+        this.alertType = 'success';
+        this.alertMessage = 'Record added successfully';
         this.loadHospitalizations();
         this.newHospitalization = this.resetHospitalization();
         this.isEditing = false;
@@ -64,7 +67,8 @@ export class HospitalizationComponent implements OnInit {
     if(confirm('Are you sure you want to delete this record?')) {
     this.hospitalizationService.deleteHospitalization(id).subscribe({
       next: () => {
-        alert('Record deleted successfully');
+        this.alertType = 'success';
+        this.alertMessage = 'Record deleted successfully';
         this.loadHospitalizations();
         
       },

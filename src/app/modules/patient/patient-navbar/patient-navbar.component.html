@@ -56,7 +56,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item text-danger" (click)="logout()">
+                            <a class="dropdown-item text-danger" (click)="confirmLogout()">
                                 <i class="fa fa-sign-out-alt me-2"></i> Logout
                             </a>
                         </li>
@@ -67,3 +67,13 @@
         </div>
     </div>
 </nav>
+<!-- Custom Logout Modal -->
+<div class="custom-modal-overlay" *ngIf="showLogoutPopup">
+  <div class="custom-modal text-center p-4 rounded-3">
+    <h5 class="mb-3" style="color: black;">Are you sure you want to log out?</h5>
+    <div class="modal-buttons d-flex justify-content-center gap-3">
+      <button class="btn btn-warning" (click)="logout()">Yes</button>
+      <button class="btn btn-secondary" (click)="cancelLogout()">No</button>
+    </div>
+  </div>
+</div>

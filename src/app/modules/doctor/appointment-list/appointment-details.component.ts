@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 ModuleRegistry.registerModules([AllCommunityModule]);
 @Component({
   selector: 'app-appointment-details',
-  imports: [CommonModule,FormsModule,DoctorNavbarComponent,ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, DoctorNavbarComponent, ReactiveFormsModule],
   templateUrl: './appointment-details.component.html',
   styleUrl: './appointment-details.component.css'
 })
@@ -19,8 +19,13 @@ export class AppointmentDetailsComponent implements OnInit {
   statusFilter: string = '';
   sortColumn: string = 'appointmentDate';
   sortAsc: boolean = true;
+  appointmentsPerPage = 5;
 
-  constructor(private appointmentService: AppointmentService) {}
+
+  currentUpcomingPage = 1;
+
+  currentPastPage = 1;
+  constructor(private appointmentService: AppointmentService) { }
 
   ngOnInit(): void {
     this.loadAppointments();
@@ -51,7 +56,7 @@ export class AppointmentDetailsComponent implements OnInit {
       filtered = filtered.filter(a => a.status === this.statusFilter);
     }
 
-   
+
     filtered = filtered.sort((a, b) => {
       const statusOrder = (s: string) =>
         s === 'Pending' ? 1 : s === 'Confirmed' ? 2 : 3;
@@ -79,14 +84,14 @@ export class AppointmentDetailsComponent implements OnInit {
   }
 
   getStatusClass(status: string): string {
-  switch (status) {
-    case 'Pending': return 'status-cell status-pending';
-    case 'Confirmed': return 'status-cell status-confirmed';
-    case 'Completed': return 'status-cell status-completed';
-    case 'Cancelled': return 'status-cell status-cancelled';
-    default: return 'status-cell';
+    switch (status) {
+      case 'Pending': return 'status-cell status-pending';
+      case 'Confirmed': return 'status-cell status-confirmed';
+      case 'Completed': return 'status-cell status-completed';
+      case 'Cancelled': return 'status-cell status-cancelled';
+      default: return 'status-cell';
+    }
   }
-}
 
 
   resetFilters() {
@@ -95,4 +100,49 @@ export class AppointmentDetailsComponent implements OnInit {
     this.sortColumn = 'appointmentDate';
     this.sortAsc = true;
   }
+
+  upcomingAppointments(): any[] {
+    const today = new Date();
+
+    return this.filteredAndSortedAppointments().filter(app =>
+      new Date(app.appointmentDate) >= today
+    );
+  }
+
+  pastAppointments(): any[] {
+    const today = new Date();
+
+    return this.filteredAndSortedAppointments().filter(app =>
+      new Date(app.appointmentDate) < today
+    );
+  }
+
+
+  get paginatedUpcomingAppointments(): any[] {
+    const startIndex = (this.currentUpcomingPage - 1) * this.appointmentsPerPage;
+    return this.upcomingAppointments().slice(startIndex, startIndex + this.appointmentsPerPage);
+  }
+
+  get paginatedPastAppointments(): any[] {
+    const startIndex = (this.currentPastPage - 1) * this.appointmentsPerPage;
+    return this.pastAppointments().slice(startIndex, startIndex + this.appointmentsPerPage);
+  }
+
+  get totalUpcomingPages(): number {
+    return Math.ceil(this.upcomingAppointments().length / this.appointmentsPerPage);
+  }
+
+  get totalPastPages(): number {
+    return Math.ceil(this.pastAppointments().length / this.appointmentsPerPage);
+  }
+
+  changeUpcomingPage(page: number): void {
+    this.currentUpcomingPage = page;
+  }
+
+  changePastPage(page: number): void {
+    this.currentPastPage = page;
+  }
+
+
 }

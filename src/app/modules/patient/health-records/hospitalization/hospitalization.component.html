@@ -1,6 +1,9 @@
 <div class="card shadow p-4">
   <h4><i class="bi bi-hospital"></i> Hospitalization History</h4>
-
+  <div *ngIf="alertMessage" class="mt-3 alert alert-{{ alertType }} alert-dismissible fade show" role="alert">
+        {{ alertMessage }}
+        <button type="button" class="btn-close" (click)="alertMessage = ''" aria-label="Close"></button>
+    </div>
   <!-- Hospitalization Records -->
   <table class="table table-striped mt-3" *ngIf="hospitalizations.length > 0">
     <thead>

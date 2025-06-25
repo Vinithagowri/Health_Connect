@@ -38,7 +38,7 @@ doctors: any[] = [];
       doctor.clinicAddress.toLowerCase().includes(term) ||
       doctor.city.toLowerCase().includes(term) ||
       doctor.state.toLowerCase().includes(term) ||
-      doctor.doctorId.toString().includes(term)
+      doctor.doctorId.toString().includes(term) 
     );
   }
 }

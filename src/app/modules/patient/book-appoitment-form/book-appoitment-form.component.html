@@ -41,14 +41,14 @@
         <div class="col-md-5 mb-3">
           <label class="form-label">Gender<span class="text-danger">*</span></label>
 
-          <!-- Show as plain text if booking for self -->
+
           <div *ngIf="bookingFor === 'self'; else genderSelect" class="form-control-plaintext">
-            <input type="text" class="form-control" name="patientName" [(ngModel)]="appointment.gender"
-            [readonly]="bookingFor === 'self'" required>
-        
+            <input type="text" class="form-control" name="patientGender" [(ngModel)]="appointment.gender"
+              [readonly]="bookingFor === 'self'" required>
+
           </div>
 
-          <!-- Show dropdown if booking for others -->
+
           <ng-template #genderSelect>
             <select class="form-select" name="gender" [(ngModel)]="appointment.gender" required>
               <option value="">Select Gender</option>
@@ -78,12 +78,16 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Select Doctor<span class="text-danger">*</span></label>
-          <select class="form-select" name="doctorId" [(ngModel)]="appointment.doctorId" required>
+          <select class="form-select" name="doctorId" [(ngModel)]="appointment.doctorId" (change)="onDoctorChange()"
+            required>
             <option [ngValue]="null">Choose a Doctor</option>
             <option *ngFor="let doctor of availableDoctors" [ngValue]="doctor.doctorId">
-              Dr. {{ doctor.fullName }} - {{ doctor.specialization }}
+              Dr. {{ doctor.fullName | titlecase}} - {{ doctor.specialization |titlecase }}
             </option>
           </select>
+          <div *ngIf="selectedDoctorAvailableTime" class="mt-2 text-muted">
+            <strong class="text-danger">Available Time:</strong> {{ selectedDoctorAvailableTime }}
+          </div>
         </div>
 
         <div class="col-md-3 mb-3">

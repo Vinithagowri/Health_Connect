@@ -1,20 +1,45 @@
 <app-navbar></app-navbar>
+
 <div class="container mt-5">
-    <div class="card p-4 shadow-lg"  style="max-width: 500px; margin: 0 auto;">
-      <h2 class="text-center mb-4">Doctor Login</h2>
-      <div *ngIf="alertMessage" class="mb-3" [ngClass]="alertClass" role="alert">
-        {{ alertMessage }}
+  <div class="card p-4 shadow-lg" style="max-width: 500px; margin: 0 auto;">
+    <h2 class="text-center mb-4">Doctor Login</h2>
+
+    
+    <div *ngIf="alertMessage" class="mb-3" [ngClass]="alertClass" role="alert">
+      {{ alertMessage }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="doctorEmail" class="form-label">Email<span class="text-danger">*</span></label>
+        <input type="email" class="form-control" id="doctorEmail" formControlName="email" placeholder="Enter your email" required>        
+        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="text-danger small mt-1">
+          <div *ngIf="email?.errors?.['required']">Email is required.</div>
+          <div *ngIf="email?.errors?.['email']">Please enter a valid email address.</div>
+        </div>
       </div>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="doctorEmail" class="form-label" >Email<span class="text-danger">*</span></label>
-          <input type="email" class="form-control" id="doctorEmail" formControlName="email" placeholder="Enter your email" required>
+
+      <div class="mb-3">
+        <label for="doctorPassword" class="form-label">Password <span class="text-danger">*</span></label>
+        <input type="password" class="form-control" id="doctorPassword" formControlName="password" placeholder="Enter your password" required>
+ <div *ngIf="form.controls['password'].touched && form.controls['password'].errors" class="text-danger small">
+          <div *ngIf="form.controls['password'].errors['required']">Password is required.</div>
+          <div *ngIf="form.controls['password'].errors['minlength']">Password must be at least 6 characters.</div>
         </div>
-        <div class="mb-3">
-          <label for="doctorPassword" class="form-label">Password <span class="text-danger">*</span></label>
-          <input type="password" class="form-control" id="doctorPassword"formControlName="password"  placeholder="Enter your password" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100"> <i class="bi bi-box-arrow-in-right me-1"> </i>Login</button>
-      </form>
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <a routerLink="/auth/forgot-password" class="small text-primary">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100 mb-3" >
+        <i class="bi bi-box-arrow-in-right me-1"></i> Login
+      </button>
+    </form>
+
+    <div class="text-center">
+      <span class="small">New to HealthConnect?</span>
+      <a routerLink="/auth/doc-signup" class="fw-semibold text-decoration-none ms-1">Register here</a>
     </div>
   </div>
+</div>

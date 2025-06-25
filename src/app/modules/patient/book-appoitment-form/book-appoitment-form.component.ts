@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PatientNavbarComponent } from '../patient-navbar/patient-navbar.component';
@@ -41,6 +41,8 @@ export class BookAppoitmentFormComponent implements OnInit {
   minDate: string = '';
   alertMessage: string = '';
   alertType: 'success' | 'danger' = 'success';
+  selectedDoctorAvailableTime: string = '';
+
 
   constructor(
     private appointmentService: AppointmentService,
@@ -75,6 +77,8 @@ export class BookAppoitmentFormComponent implements OnInit {
           const selectedDoctor = this.availableDoctors.find(d => d.doctorId === this.appointment.doctorId);
           if (selectedDoctor) {
             this.appointment.doctorName = selectedDoctor.fullName;
+            this.selectedDoctorAvailableTime = selectedDoctor.availability || 'Timing not available';
+
           }
         }
       },
@@ -103,7 +107,14 @@ export class BookAppoitmentFormComponent implements OnInit {
       this.prefillForSelf();
     }
   }
-
+  onDoctorChange() {
+  const selectedDoctor = this.availableDoctors.find(d => d.doctorId === this.appointment.doctorId);
+  if (selectedDoctor) {
+    this.selectedDoctorAvailableTime = selectedDoctor.availability || 'Timing not available';
+  } else {
+    this.selectedDoctorAvailableTime = '';
+  }
+}
   onBookingForChange() {
     if (this.bookingFor === 'self') {
       this.prefillForSelf();
@@ -139,28 +150,33 @@ export class BookAppoitmentFormComponent implements OnInit {
   }
 
   submitForm() {
-    const combinedDateTime = new Date(`${this.dateInput}T${this.timeInput}`);
+  
+  const [year, month, day] = this.dateInput.split('-').map(Number);
+  const [hour, minute] = this.timeInput.split(':').map(Number);
+  const combinedDateTime = new Date(year, month - 1, day, hour, minute);
 
-    const now = new Date();
-    const nowIST = new Date(now.getTime() + (5.5 * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
-    const twoHoursLaterIST = new Date(nowIST.getTime() + (2 * 60 * 60 * 1000));
 
-    if (combinedDateTime < twoHoursLaterIST) {
-      this.alertType = 'danger';
-      this.alertMessage = 'Please choose a time at least 2 hours from now (IST).';
-      return;
-    }
+  const now = new Date();
+  const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
 
-    this.appointment.appointmentDate = combinedDateTime.toISOString();
-
-    this.appointmentService.makeAppointment(this.appointment).subscribe({
-      next: () => {
-        this.router.navigate(['/patient/appointment-confirmation']);
-      },
-      error: (err) => {
-        this.alertType = 'danger';
-        this.alertMessage = 'Failed to book appointment: ' + (err.error?.message || 'Unknown error');
-      }
-    });
+  if (combinedDateTime < twoHoursLater) {
+    this.alertType = 'danger';
+    this.alertMessage = 'Please choose a time at least 2 hours from now.';
+    return;
   }
+
+
+  this.appointment.appointmentDate = combinedDateTime.toISOString();
+
+  this.appointmentService.makeAppointment(this.appointment).subscribe({
+    next: () => {
+      this.router.navigate(['/patient/appointment-confirmation']);
+    },
+    error: (err) => {
+      this.alertType = 'danger';
+      this.alertMessage = 'Failed to book appointment: ' + (err.error?.message || 'Unknown error');
+    }
+  });
+}
+
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../pages/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -9,7 +9,7 @@ import { AuthService, PatientModel } from '../../../services/auth.service';
 @Component({
   selector: 'app-patientsignup',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FormsModule, HttpClientModule],
+  imports: [ReactiveFormsModule, NavbarComponent,RouterModule, CommonModule, FormsModule, HttpClientModule],
   templateUrl: './patientsignup.component.html',
   styleUrl: './patientsignup.component.css'
 })
@@ -58,10 +58,11 @@ export class PatientsignupComponent {
       this.AuthService.signupPatient(patientData).subscribe({
         next: (res) => {
           this.showAlert('Signup successful! Redirecting to dashboard...', 'success');
-          localStorage.setItem('PatientId', res.id); 
+          localStorage.setItem('AuthToken', res.token);
+          localStorage.setItem('PatientId', res.patient.id); 
+          localStorage.setItem('PatientName', res.patient.fullname); 
+          localStorage.setItem('LoggedInPatient', JSON.stringify(res.patient)); 
           
-          localStorage.setItem('PatientName', res.fullName); 
-          localStorage.setItem('LoggedInPatient', JSON.stringify(res)); 
           setTimeout(() => {
             this.router.navigate(['/patient']);
           }, 2000);
@@ -76,4 +77,8 @@ export class PatientsignupComponent {
       this.showAlert('Please fill in all required fields correctly.', 'danger');
     }
   }
+  get passwordMismatch(): boolean {
+  const { password, confirmPassword } = this.form.value;
+  return password && confirmPassword && password !== confirmPassword;
+}
 }

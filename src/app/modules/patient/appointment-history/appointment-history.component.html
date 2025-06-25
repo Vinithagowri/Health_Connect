@@ -5,66 +5,118 @@
 
   <!-- Filters Section -->
   <div class="row mb-4">
-  <div class="col-md-3 mb-2">
-    <input type="text" class="form-control" placeholder="Search by Doctor Name"
-           [(ngModel)]="doctorNameFilter" (ngModelChange)="applyFilters()">
+    <div class="col-md-3 mb-2">
+      <input type="text" class="form-control" placeholder="Search by Doctor Name"
+             [(ngModel)]="doctorNameFilter" (ngModelChange)="applyFilters()">
+    </div>
+    <div class="col-md-3 mb-2">
+      <input type="text" class="form-control" placeholder="Search by Patient Name"
+             [(ngModel)]="patientNameFilter" (ngModelChange)="applyFilters()">
+    </div>
+    <div class="col-md-2 mb-2">
+      <input type="date" class="form-control"
+             [(ngModel)]="dateFilter" (ngModelChange)="applyFilters()">
+    </div>
+    <div class="col-md-2 mb-2">
+      <select class="form-select"
+              [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()">
+        <option value="">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="col-md-1 mb-2 text-end">
+      <button class="btn btn-secondary w-100" (click)="clearFilters()">Clear</button>
+    </div>
   </div>
-  <div class="col-md-3 mb-2">
-    <input type="text" class="form-control" placeholder="Search by Patient Name"
-           [(ngModel)]="patientNameFilter" (ngModelChange)="applyFilters()">
-  </div>
-  <div class="col-md-2 mb-2">
-    <input type="date" class="form-control"
-           [(ngModel)]="dateFilter" (ngModelChange)="applyFilters()">
-  </div>
-  <div class="col-md-2 mb-2">
-    <select class="form-select"
-            [(ngModel)]="statusFilter" (ngModelChange)="applyFilters()">
-      <option value="">All Statuses</option>
-      <option value="Pending">Pending</option>
-      <option value="Confirmed">Confirmed</option>
-      <option value="Completed">Completed</option>
-      <option value="Cancelled">Cancelled</option>
-    </select>
-  </div>
-  <div class="col-md-1 mb-2 text-end">
-    <button class="btn btn-secondary w-100" (click)="clearFilters()">Clear</button>
-  </div>
+
+  <h4 class="mb-3">Upcoming Appointments</h4>
+<div *ngIf="paginatedUpcomingAppointments.length === 0" class="alert alert-info text-center">
+  No upcoming appointments found.
 </div>
 
+<div class="row" *ngIf="paginatedUpcomingAppointments.length > 0">
+  <div *ngFor="let appt of paginatedUpcomingAppointments" class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title">Dr. {{ appt.doctorName || 'N/A' | titlecase }}</h5>
+        <h6><strong>Patient Name:</strong> {{ appt.patientName || 'N/A' | titlecase }}</h6>
+        <p class="mb-1"><strong>Date:</strong> {{ appt.appointmentDate | date: 'fullDate' }}</p>
+        <p class="mb-1"><strong>Time:</strong> {{ appt.appointmentDate | date: 'shortTime' }}</p>
+        <p class="mb-1"><strong>Reason:</strong> {{ appt.reason }}</p>
+        <p class="mb-1"><strong>Status:</strong>
+          <span class="badge" [ngClass]="getStatusClass(appt.status)">{{ appt.status }}</span>
+        </p>
 
-  <div *ngIf="filteredAppointments.length === 0" class="alert alert-info text-center">
-    No appointments found.
-  </div>
-
-  <div *ngIf="filteredAppointments.length > 0" class="row">
-    <div *ngFor="let appt of filteredAppointments" class="col-md-4 mb-4">
-      <div class="card h-100 shadow-sm border-0">
-        <div class="card-body">
-          <h5 class="card-title">Dr. {{ appt.doctorName || 'N/A' | titlecase }}</h5>
-          <h6><strong>Patient Name:</strong> {{ appt.patientName || 'N/A' | titlecase }}</h6>
-          <p class="mb-1"><strong>Date:</strong> {{ appt.appointmentDate | date: 'fullDate' }}</p>
-          <p class="mb-1"><strong>Time:</strong> {{ appt.appointmentDate | date: 'shortTime' }}</p>
-          <p class="mb-1"><strong>Reason:</strong> {{ appt.reason }}</p>
-          <p class="mb-1" style="margin-right: 5px;"><strong>Status:</strong> 
-            <span class="badge" style="margin-left: 10px;"
-              [ngClass]="{
-                'bg-success': appt.status === 'Completed',
-                'bg-warning': appt.status === 'Pending',
-                'bg-danger': appt.status === 'Cancelled',
-                'bg-primary': appt.status === 'Confirmed',
-              }">
-              {{ appt.status }}
-            </span>
-          </p>
-
-          <div *ngIf="appt.status === 'Pending'" class="mt-3 text-end">
-            <button class="btn btn-outline-danger btn-sm" (click)="cancelAppointment(appt.appointmentId)">
-              Cancel Appointment
-            </button>
-          </div>
+        <div *ngIf="appt.status === 'Pending'" class="mt-3 text-end">
+          <button class="btn btn-outline-danger btn-sm" (click)="cancelAppointment(appt.appointmentId)">
+            Cancel Appointment
+          </button>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<!-- Pagination Controls -->
+<nav *ngIf="totalUpcomingPages > 1" class="mt-3">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [class.disabled]="currentUpcomingPage === 1">
+      <button class="page-link" (click)="changeUpcomingPage(currentUpcomingPage - 1)">Previous</button>
+    </li>
+
+    <li *ngFor="let page of [].constructor(totalUpcomingPages); let i = index"
+        class="page-item" [class.active]="currentUpcomingPage === (i + 1)">
+      <button class="page-link" (click)="changeUpcomingPage(i + 1)">{{ i + 1 }}</button>
+    </li>
+
+    <li class="page-item" [class.disabled]="currentUpcomingPage === totalUpcomingPages">
+      <button class="page-link" (click)="changeUpcomingPage(currentUpcomingPage + 1)">Next</button>
+    </li>
+  </ul>
+</nav>
+
+  <!-- PAST APPOINTMENTS -->
+  <h4 class="mt-5 mb-3">Past Appointments</h4>
+<div *ngIf="paginatedPastAppointments.length === 0" class="alert alert-info text-center">
+  No past appointments found.
+</div>
+
+<div class="row" *ngIf="paginatedPastAppointments.length > 0">
+  <div *ngFor="let appt of paginatedPastAppointments" class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="card-title">Dr. {{ appt.doctorName || 'N/A' | titlecase }}</h5>
+        <h6><strong>Patient Name:</strong> {{ appt.patientName || 'N/A' | titlecase }}</h6>
+        <p class="mb-1"><strong>Date:</strong> {{ appt.appointmentDate | date: 'fullDate' }}</p>
+        <p class="mb-1"><strong>Time:</strong> {{ appt.appointmentDate | date: 'shortTime' }}</p>
+        <p class="mb-1"><strong>Reason:</strong> {{ appt.reason }}</p>
+        <p class="mb-1"><strong>Status:</strong>
+          <span class="badge" [ngClass]="getStatusClass(appt.status)">{{ appt.status }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pagination Controls for Past -->
+<nav *ngIf="totalPastPages > 1" class="mt-3">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [class.disabled]="currentPastPage === 1">
+      <button class="page-link" (click)="changePastPage(currentPastPage - 1)">Previous</button>
+    </li>
+
+    <li *ngFor="let page of [].constructor(totalPastPages); let i = index"
+        class="page-item" [class.active]="currentPastPage === (i + 1)">
+      <button class="page-link" (click)="changePastPage(i + 1)">{{ i + 1 }}</button>
+    </li>
+
+    <li class="page-item" [class.disabled]="currentPastPage === totalPastPages">
+      <button class="page-link" (click)="changePastPage(currentPastPage + 1)">Next</button>
+    </li>
+  </ul>
+</nav>
+
 </div>

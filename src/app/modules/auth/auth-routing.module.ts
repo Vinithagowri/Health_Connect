@@ -4,6 +4,7 @@ import { PatientloginComponent } from './patientlogin/patientlogin.component';
 import { PatientsignupComponent } from './patientsignup/patientsignup.component';
 import { DoctorloginComponent } from './doctorlogin/doctorlogin.component';
 import { DoctorsignupComponent } from './doctorsignup/doctorsignup.component';
+import { ForgotpasswordComponent } from './forgotpassword/forgotpassword.component';
 
 
 const routes: Routes = [
@@ -11,6 +12,7 @@ const routes: Routes = [
   {path:'pat-signup',component:PatientsignupComponent},
   {path:'doc-login',component:DoctorloginComponent},
   {path:'doc-signup',component:DoctorsignupComponent},
+  {path:'forgot-password',component:ForgotpasswordComponent}
   // {path:'',redirectTo:'pat-login',pathMatch:'full'},
 
 ];

@@ -12,17 +12,27 @@ import { Modal } from 'bootstrap';
   styleUrl: './doctor-navbar.component.css'
 })
 export class DoctorNavbarComponent {
+  showLogoutPopup = false;
+  showLogoutAlert = false;
+
   constructor(private router: Router) {}
-  
-  logout(){
-    const modalElement = document.getElementById('logoutModal');
-  
-  if (modalElement) {
-    
-    const modalInstance = Modal.getInstance(modalElement) || new Modal(modalElement);
-    modalInstance.hide();
+
+  confirmLogout(): void {
+    this.showLogoutPopup = true;
   }
+
+  logout(): void {
+    this.showLogoutPopup = false;
     localStorage.clear();
-    this.router.navigate(['/']);
+  
+
+    setTimeout(() => {
+      
+      this.router.navigate(['/']);
+    }, 500); 
+  }
+
+  cancelLogout(): void {
+    this.showLogoutPopup = false;
   }
 }

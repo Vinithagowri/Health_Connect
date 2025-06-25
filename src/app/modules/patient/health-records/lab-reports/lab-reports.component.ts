@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PatientRecordsService } from '../../../../services/patient-records.service';
 
@@ -11,10 +11,14 @@ import { PatientRecordsService } from '../../../../services/patient-records.serv
 })
 export class LabReportsComponent implements OnInit {
   labReports: any[] = [];
-  patientId = Number(localStorage.getItem("PatientId")); // Replace with dynamic patient ID if needed
+  patientId = Number(localStorage.getItem("PatientId")); 
   isLabReportAvailable: boolean = true;
-  constructor(private LabReportsService: PatientRecordsService) {}
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
+alertMessage: string = '';
+alertType: 'success' | 'danger' = 'success';
+  constructor(private LabReportsService: PatientRecordsService) {}
+  
   ngOnInit(): void {
     this.loadReports();
   }
@@ -30,7 +34,7 @@ export class LabReportsComponent implements OnInit {
         }));
       },
       error: () => {
-        // alert('Failed to load lab reports.');
+        
         this.isLabReportAvailable = false;
       }
     });
@@ -40,11 +44,13 @@ export class LabReportsComponent implements OnInit {
     if (confirm('Are you sure you want to delete this report?')) {
       this.LabReportsService.deleteLabReport(reportId).subscribe({
         next: () => {
-          alert('Report deleted successfully!');
+          this.alertType = 'success';
+      this.alertMessage = 'Report Deleted successfully!';
           this.loadReports();
         },
         error: () => {
-          alert('Failed to delete report.');
+          this.alertType = 'danger';
+      this.alertMessage = 'Failed to Delete report.';
         }
       });
     }
@@ -54,7 +60,7 @@ export class LabReportsComponent implements OnInit {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = reportName;  // give it a proper filename
+    a.download = reportName; 
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -65,24 +71,32 @@ export class LabReportsComponent implements OnInit {
 }
 
   uploadReport(event: any): void {
-    const file = event.target.files[0];
-    if (!file) return;
+  const file = event.target.files[0];
+  if (!file) return;
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('patientId', this.patientId.toString());
-    formData.append('reportName', file.name);
-    formData.append('reportDate', new Date().toISOString());
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('patientId', this.patientId.toString());
+  formData.append('reportName', file.name);
+  formData.append('reportDate', new Date().toISOString());
 
-    this.LabReportsService.addLabReport(formData).subscribe({
-      next: () => {
-        alert('Report uploaded successfully!');
-        this.loadReports();
-      },
-      error: () => {
-        alert('Failed to upload report.');
-      }
-    });
-  }
+  this.LabReportsService.addLabReport(formData).subscribe({
+    next: () => {
+      this.alertType = 'success';
+      this.alertMessage = 'Report uploaded successfully!';
+      this.loadReports();
+      this.resetUploadField();
+    },
+    error: () => {
+      this.alertType = 'danger';
+      this.alertMessage = 'Failed to upload report.';
+      this.resetUploadField();
+    }
+  });
+}
+
+resetUploadField(): void {
+  this.fileInput.nativeElement.value = '';
+}
   
 }

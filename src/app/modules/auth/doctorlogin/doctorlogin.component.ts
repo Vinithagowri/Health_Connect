@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { NavbarComponent } from '../../../pages/navbar/navbar.component';
@@ -10,7 +10,7 @@ import { AuthService, LoginModel } from '../../../services/auth.service';
 @Component({
   selector: 'app-doctorlogin',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FormsModule,RouterModule],
   templateUrl: './doctorlogin.component.html',
   styleUrl: './doctorlogin.component.css'
 })
@@ -26,7 +26,7 @@ export class DoctorloginComponent {
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
@@ -46,10 +46,12 @@ export class DoctorloginComponent {
       this.AuthService.loginDoctor(loginData).subscribe({
         next: (res) => {
           this.showAlert('Login successful! Redirecting...', 'success');
-          localStorage.setItem('doctorId', res.id);
+          console.log('Login successful:', res);
+          localStorage.setItem('AuthToken', res.token);
+          localStorage.setItem('doctorId', res.doctor.id);
 
-          localStorage.setItem('doctorName', res.fullName);
-          localStorage.setItem('loggedInDoctor', JSON.stringify(res));
+          localStorage.setItem('doctorName', res.doctor.fullname);
+          localStorage.setItem('loggedInDoctor', JSON.stringify(res.doctor));
 
 
           setTimeout(() => this.router.navigate(['/doctor']), 2000);
@@ -76,5 +78,12 @@ export class DoctorloginComponent {
     } else {
       this.showAlert('Please fill all the fields correctly', 'danger');
     }
+  }
+  get email() {
+    return this.form.get('email');
+  }
+
+  get password() {
+    return this.form.get('password');
   }
 }

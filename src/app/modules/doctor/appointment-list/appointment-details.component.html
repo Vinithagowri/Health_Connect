@@ -4,11 +4,11 @@
   <div class="card shadow p-4">
     <h2 class="text-center mb-4">Your Appointments</h2>
 
-    <div class="d-flex justify-content-between mb-3">
-      <input type="text" class="form-control w-50 me-2" placeholder="Search by patient name..."
-        [(ngModel)]="searchTerm">
+    <!-- Filters -->
+    <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+      <input type="text" class="form-control w-50" placeholder="Search by patient name..." [(ngModel)]="searchTerm">
 
-      <select class="form-select w-25 me-2" [(ngModel)]="statusFilter">
+      <select class="form-select w-auto" [(ngModel)]="statusFilter">
         <option value="">All Status</option>
         <option value="Pending">Pending</option>
         <option value="Confirmed">Confirmed</option>
@@ -21,19 +21,13 @@
       </button>
     </div>
 
-    <table class="table table-bordered table-hover">
+    <!-- Upcoming Appointments -->
+    <h4 class="mt-4">Upcoming Appointments</h4>
+    <table class="table table-bordered table-hover" *ngIf="paginatedUpcomingAppointments.length > 0; else noUpcoming">
       <thead>
         <tr>
-          <th (click)="sortBy('patientName')" style="cursor: pointer;">
-            Patient Name
-            <i
-              [class]="sortColumn === 'patientName' ? (sortAsc ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill') : 'bi'"></i>
-          </th>
-          <th (click)="sortBy('appointmentDate')" style="cursor: pointer;">
-            Date
-            <i
-              [class]="sortColumn === 'appointmentDate' ? (sortAsc ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill') : 'bi'"></i>
-          </th>
+          <th>Patient Name</th>
+          <th>Date</th>
           <th>Time</th>
           <th>Reason</th>
           <th>Status</th>
@@ -41,21 +35,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let app of filteredAndSortedAppointments()">
+        <tr *ngFor="let app of paginatedUpcomingAppointments">
           <td>{{ app.patientName | titlecase }}</td>
           <td>{{ app.appointmentDate | date: 'shortDate' }}</td>
           <td>{{ app.appointmentDate | date: 'shortTime' }}</td>
           <td>{{ app.reason }}</td>
-          <td [ngClass]="getStatusClass(app.status)">
-            {{ app.status }}
-          </td>
-
+          <td [ngClass]="getStatusClass(app.status)">{{ app.status }}</td>
           <td>
             <select class="form-select" [value]="app.status" #statusSelect
               (change)="updateStatus(app.appointmentId, statusSelect.value)"
-              [disabled]="app.status === 'Cancelled' || app.status === 'Completed'"
-              [title]="app.status === 'Cancelled' ? 'Cannot update a cancelled appointment' : ''">
-
+              [disabled]="app.status === 'Cancelled' || app.status === 'Completed'">
               <option value="Pending">Pending</option>
               <option value="Confirmed">Confirmed</option>
               <option value="Completed">Completed</option>
@@ -66,28 +55,73 @@
       </tbody>
     </table>
 
-    <div *ngIf="filteredAndSortedAppointments().length === 0" class="text-center mt-3">
-      <p class="text-muted">No appointments found.</p>
-    </div>
+    
+    <nav *ngIf="totalUpcomingPages > 1" class="mt-3">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentUpcomingPage === 1">
+          <button class="page-link" (click)="changeUpcomingPage(currentUpcomingPage - 1)">Previous</button>
+        </li>
+
+        <li *ngFor="let page of [].constructor(totalUpcomingPages); let i = index" class="page-item"
+          [class.active]="currentUpcomingPage === (i + 1)">
+          <button class="page-link" (click)="changeUpcomingPage(i + 1)">{{ i + 1 }}</button>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentUpcomingPage === totalUpcomingPages">
+          <button class="page-link" (click)="changeUpcomingPage(currentUpcomingPage + 1)">Next</button>
+        </li>
+      </ul>
+    </nav>
+
+    <ng-template #noUpcoming>
+      <p class="text-muted text-center">No upcoming appointments found.</p>
+    </ng-template>
+
+
+    <!-- Past Appointments -->
+    <h4 class="mt-5">Past Appointments</h4>
+    <table class="table table-bordered table-hover" *ngIf="paginatedPastAppointments.length > 0; else noPast">
+      
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Reason</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of paginatedPastAppointments">
+          <td>{{ app.patientName | titlecase }}</td>
+          <td>{{ app.appointmentDate | date: 'shortDate' }}</td>
+          <td>{{ app.appointmentDate | date: 'shortTime' }}</td>
+          <td>{{ app.reason }}</td>
+          <td [ngClass]="getStatusClass(app.status)">{{ app.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+      
+    <nav *ngIf="totalPastPages > 1" class="mt-3">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPastPage === 1">
+          <button class="page-link" (click)="changePastPage(currentPastPage - 1)">Previous</button>
+        </li>
+
+        <li *ngFor="let page of [].constructor(totalPastPages); let i = index" class="page-item"
+          [class.active]="currentPastPage === (i + 1)">
+          <button class="page-link" (click)="changePastPage(i + 1)">{{ i + 1 }}</button>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPastPage === totalPastPages">
+          <button class="page-link" (click)="changePastPage(currentPastPage + 1)">Next</button>
+        </li>
+      </ul>
+    </nav>
+
+    <ng-template #noPast>
+      <p class="text-muted text-center">No past appointments found.</p>
+    </ng-template>
+
   </div>
 </div>
-
-<!-- <app-doctor-navbar></app-doctor-navbar> -->
-
-<!-- <div class="container mt-4">
-  <div class="card shadow p-3">
-    <h2 class="card-title text-center mb-3">Your Appointments</h2>
-
-    <ag-grid-angular
-  style="width: 100%; height: 500px;"
-  class="ag-theme-meterial custom-grid"
-  [rowData]="rowData"
-  [columnDefs]="colDefs"
-  [defaultColDef]="defaultColDef"
-  [pagination]="true"
-  [paginationPageSize]="10"
-  (gridReady)="onGridReady($event)">
-</ag-grid-angular>
-
-  </div>
-</div> -->

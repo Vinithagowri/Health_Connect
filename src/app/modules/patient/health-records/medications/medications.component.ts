@@ -20,6 +20,8 @@ export class MedicationsComponent implements OnInit {
     endDate: '',
     notes: ''
   };
+  alertMessage: string = '';
+  alertType: 'success' | 'danger' = 'success';
 
   patientId: number = Number(localStorage.getItem('PatientId'));
 
@@ -33,8 +35,14 @@ export class MedicationsComponent implements OnInit {
     this.medicationService.getMedications(this.patientId).subscribe({
       next: (data) => {
         this.medications = data;
+        if (this.medications.length === 0) {
+          this.alertType = 'danger';
+          this.alertMessage = 'No medications found for this patient.';
+        }
       },
       error: (err) => {
+        this.alertType = 'danger';
+        this.alertMessage = 'Failed to fetch medications.';
         console.error('Failed to fetch medications:', err);
       }
     });
@@ -50,6 +58,8 @@ export class MedicationsComponent implements OnInit {
 
     this.medicationService.addMedication(medToAdd).subscribe({
       next: () => {
+        this.alertType = 'success';
+        this.alertMessage = 'Medication added successfully';
         this.fetchMedications();
         this.newMedication = {
           medicationName: '',
@@ -62,6 +72,8 @@ export class MedicationsComponent implements OnInit {
         };
       },
       error: (err) => {
+        this.alertType = 'danger';
+        this.alertMessage = 'Failed to add medication.';
         console.error('Failed to add medication:', err);
       }
     });
@@ -84,9 +96,13 @@ export class MedicationsComponent implements OnInit {
     if (confirm('Are you sure you want to delete this medication?')) {
       this.medicationService.deleteMedication(MedicationId).subscribe({
         next: () => {
+          this.alertType = 'success';
+          this.alertMessage = 'Medication deleted successfully';
           this.fetchMedications();
         },
         error: (err) => {
+          this.alertType = 'danger';
+          this.alertMessage = 'Failed to delete medication.';
           console.error('Failed to delete medication:', err);
         }
       });

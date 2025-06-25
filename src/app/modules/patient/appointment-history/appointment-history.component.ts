@@ -67,7 +67,23 @@ export class AppointmentHistoryComponent implements OnInit {
   this.statusFilter = '';
   this.applyFilters();
 }
+upcomingAppointments(): any[] {
+  const today = new Date();
+  return this.filteredAppointments.filter(appt => new Date(appt.appointmentDate) >= today);
+}
 
+pastAppointments(): any[] {
+  const today = new Date();
+  return this.filteredAppointments.filter(appt => new Date(appt.appointmentDate) < today);
+}
+getStatusClass(status: string): string {
+  return {
+    'Pending': 'bg-warning',
+    'Confirmed': 'bg-primary',
+    'Completed': 'bg-success',
+    'Cancelled': 'bg-danger'
+  }[status] || 'bg-secondary';
+}
   cancelAppointment(appointmentId: number) {
     const confirmCancel = confirm("Are you sure you want to cancel this appointment?");
     if (!confirmCancel) return;
@@ -87,4 +103,37 @@ export class AppointmentHistoryComponent implements OnInit {
       }
     });
   }
+  appointmentsPerPage = 6;
+
+
+currentUpcomingPage = 1;
+
+currentPastPage = 1;
+
+get paginatedUpcomingAppointments(): any[] {
+  const start = (this.currentUpcomingPage - 1) * this.appointmentsPerPage;
+  return this.upcomingAppointments().slice(start, start + this.appointmentsPerPage);
+}
+
+get paginatedPastAppointments(): any[] {
+  const start = (this.currentPastPage - 1) * this.appointmentsPerPage;
+  return this.pastAppointments().slice(start, start + this.appointmentsPerPage);
+}
+
+get totalUpcomingPages(): number {
+  return Math.ceil(this.upcomingAppointments().length / this.appointmentsPerPage);
+}
+
+get totalPastPages(): number {
+  return Math.ceil(this.pastAppointments().length / this.appointmentsPerPage);
+}
+
+changeUpcomingPage(page: number): void {
+  this.currentUpcomingPage = page;
+}
+
+changePastPage(page: number): void {
+  this.currentPastPage = page;
+}
+
 }

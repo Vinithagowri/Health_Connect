@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../pages/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 
@@ -10,7 +10,7 @@ import { AuthService, LoginModel } from '../../../services/auth.service';
 @Component({
   selector: 'app-patientlogin',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FormsModule, HttpClientModule],
+  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FormsModule, HttpClientModule,RouterModule],
   templateUrl: './patientlogin.component.html',
   styleUrl: './patientlogin.component.css'
 })
@@ -45,12 +45,14 @@ export class PatientloginComponent {
 
       this.AuthService.loginPatient(loginData).subscribe({
         next: (res) => {
-          this.showAlert('Login successful! Redirecting to dashboard...', 'success');
-          localStorage.setItem('PatientId', res.id); 
           
-          localStorage.setItem('PatientName', res.fullName); 
-          localStorage.setItem('LoggedInPatient', JSON.stringify(res)); 
-         
+          this.showAlert('Login successful! Redirecting to dashboard...', 'success');
+          localStorage.setItem('AuthToken', res.token);
+          localStorage.setItem('PatientId', res.patient.id); 
+          
+          localStorage.setItem('PatientName', res.patient.fullname); 
+          localStorage.setItem('LoggedInPatient', JSON.stringify(res.patient)); 
+          
           setTimeout(() => {
             this.router.navigate(['/patient']);
           }, 2000);
@@ -64,7 +66,7 @@ export class PatientloginComponent {
           else{
             errorMsg = err.error?.message || 'Invalid email or password.';
           } 
-          console.error(errorMsg);
+          
           this.showAlert(errorMsg, 'danger');
         }
       });
